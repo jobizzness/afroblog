@@ -1,0 +1,51 @@
+[<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<!--
+`<dapp-header>` is Description
+
+@element Dapp
+-->
+<dom-module id="dapp-element">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+
+             <!--<app-header slot="header" condenses reveals effects="waterfall">
+        <app-toolbar>
+          <div main-title>Home Page</div>
+        </app-toolbar>
+      </app-header>-->
+
+    </template>
+
+    <script>
+        class DappHeader extends Polymer.Element {
+
+            static get is() { return 'dapp-header'; }
+
+            static get properties() {
+                return {
+                    
+                };
+            }
+
+            constructor() {
+                super();
+            }
+
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+
+        }
+
+        window.customElements.define(DappHeader.is, DappHeader);
+    </script>
+</dom-module>]

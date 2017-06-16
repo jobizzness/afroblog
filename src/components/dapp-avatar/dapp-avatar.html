@@ -1,0 +1,45 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="dapp-avatar">
+	<template>
+		<style>
+			:host {
+				display: block;
+				position: relative;
+			}
+			.avatar {
+			    position: relative;
+			}
+			.avatar img {
+			  border-radius: 9999px;
+			  height: 100%;
+			      border: 4px solid #fff;
+			  position: relative;
+			  width: 100%;
+			  z-index: 2;
+			}
+		</style>
+		
+		<div class="avatar" style$="width:[[width]]; height:[[height]]">
+		  <img src="https://blog.pinterest.com/sites/blog/files/styles/50x50/public/cassis.jpg?itok=xov0t3k5">
+		</div>
+	</template>
+	<script>
+
+        class DappAvatar extends Polymer.Element{
+            static get is() { return 'dapp-avatar'; }
+
+            static get properties() {
+                return {
+                    src: String,
+                    width: String,
+                    height: String
+                }
+            }
+        }
+
+        window.customElements.define(DappAvatar.is, DappAvatar);
+	
+	</script>
+</dom-module>
