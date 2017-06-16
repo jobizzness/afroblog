@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "categories": {
+      ".read": true,
+      ".write": true
+    },
+    "tags": {
+      ".read": true,
+      ".write": true
+    },
+    "sliders": {
+      ".read": true,
+      ".write": true
+    },
+    "posts": {
+      ".indexOn": ["slug", "status", "slug_status"],
+      ".read": true,
+      ".write": true
+    },
+    "projects": {
+      ".read": true,
+      ".write": true
+    },
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    }
+    
+  }
+}

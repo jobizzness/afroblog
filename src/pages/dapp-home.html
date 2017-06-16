@@ -13,35 +13,120 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../shared-styles.html">
 
 <!-- App Components-->
-<link rel="import" href="../components/dapp-header/dapp-header.html">
+
 <link rel="import" href="../components/dapp-post-item/dapp-post-item.html">
 
 <dom-module id="dapp-home">
   <template>
-    <style include="shared-styles">
+    <style include="shared-styles iron-flex iron-flex-alignment">
       :host {
         display: block;
-        padding: 16px;
       }
       /* Smartphones (portrait) ----------- */
         @media only screen and (max-width : 425px) {
             :host{
                 padding:0;
             }
+            .hero{
+                height: 90vh;
+                position: relative;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-image: url("https://firebasestorage.googleapis.com/v0/b/afrodapp-blog.appspot.com/o/18095747_250601042073150_2152766432004276224_n.jpg?alt=media&token=7003cd9d-a855-4a94-a5dc-1d74c624f1f2");
+            }
+             .hero-info{
+                @apply(--layout-vertical);
+                @apply(--layout-center-center);
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top:0;
+                left: 0;
+            }
+            .hero-title{
+                  font-size: 40px;
+                  margin: 8px;
+                  color: white;
+                  white-space: nowrap;
+                  line-height: 40px;
+                  font-weight: 600;
+              }
+              .hero-sub_title{
+                  font-weight: 100;
+                  max-width: 254px;
+                  text-align: center;
+                  margin: 8px;
+                  color: white;
+                  font-size: 18px;
+              }
+              .discover-button{
+                  background-color: var(--app-accent-color);
+                  color: #fff;
+                  margin-top: 16px;
+                  font-size: 17px;
+                  text-transform: capitalize;
+              }
+              .dim-overlay{
+                  background-color: transparent;
+                  background-color: rgba(25, 25, 25, 0.62);
+                  background: -webkit-linear-gradient(transparent, rgba(25, 25, 25, 0.62));
+                  background: linear-gradient(transparent, rgba(25, 25, 25, 0.62));
+                  bottom: 0;
+                  height: 300px;
+                  left: 0;
+                  position: absolute;
+                  right: 0;
+              }
         }
       dapp-post-item{
         min-height: 200px;
       }
     </style>
+      <!-- Query -->
+      <firebase-query
+          data="{{_posts}}"
+          path="/posts">
+      </firebase-query>
 
+     <app-indexeddb-mirror
+        key="/posts"
+        data="[[_posts]]"
+        persisted-data="{{posts}}">
+    </app-indexeddb-mirror>
+
+    <iron-media-query query="max-width: 425px" query-matches="{{smallScreen}}"></iron-media-query>
 
     <div class="content">
-      <iron-list items="[[data]]" as="item" scroll-target="document">
+      
+      <!-- Hero for small devices-->
+      <dom-if if="{{smallScreen}}">
         <template>
-          <dapp-post-item></dapp-post-item>
+          <div class="hero">
+            <div class="hero-info">
+              <h1 class="hero-title">Afrodapp</h1>
+              <h2 class="hero-sub_title">Discover Art &amp; Creativity of Africa's Rising Fashion Industry</h2>
+              <div class="layout horizontal center-center">
+                <paper-button raised class="discover-button">
+                  Learn More<iron-icon icon="dapp-icons:chevron-right"></iron-icon>
+                </paper-button>
+              </div>
+            </div>
+            <!-- Dim Overlay -->
+            <div class="dim-overlay"></div>
+          </div>
+        </template>
+      </dom-if>
+      <iron-list items="[[posts]]" as="post" scroll-target="document" scroll-offset="{{_shouldOffsetList}}">
+        <template>
+          <dapp-post-item data="[[post]]" on-click="_tapped"></dapp-post-item>
         </template>
       </iron-list>
     </div>
@@ -50,16 +135,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     class DappHome extends Polymer.Element {
       static get is() { return 'dapp-home'; }
-      
+      static get properties() { return {
+
+            _posts:{ 
+              type: Array 
+            },
+            _shouldOffsetList:{
+              computed:'_computeShouldOffsetList(smallScreen)'
+            }
+        }}
+
+      static get observers(){ return [
+        '_postsChanged(_posts.splices)'
+        ]}
+
       constructor(){
         super();
-        this.data = [{},{},{},{}];
+        this.loading = true;
       }
-    
+      
+      _computeShouldOffsetList(smallScreen){
+        return smallScreen ? 425: 0;
+
+      }
+      _postsChanged(post){
+        if(post){
+          this.loading = false;
+        }
+      }
+
+      _tapped(e){
+        console.log(e);
+        console.log('oops');
+      }
     }
-
-
-
+    
     window.customElements.define(DappHome.is, DappHome);
   </script>
 </dom-module>

@@ -3,8 +3,12 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+
 <!-- Components -->
 <link rel="import" href="../dapp-avatar/dapp-avatar.html">
+<link rel="import" href="../dapp-icons/dapp-icons.html">
+
 <!--
 `<dapp-post-item>` is Description
 
@@ -43,8 +47,9 @@
                 color: rgba(0, 0, 0, 0.78);
 
             }
-            .post-slug{
-                padding: 24px;
+            .post-excert{
+                padding: 0px 24px 24px;
+                margin: 0;
                 line-height: 28px;
                 font-size: 17px;
                 color: var(--app-text-color);
@@ -55,6 +60,19 @@
             .post-item footer{
                 position: relative;
                 padding: 24px 16px;
+            }
+            .post-item .post-title{
+                font-weight: 500;
+                padding: 24px;
+                font-size: 24px;
+                color: rgba(0, 0, 0, 0.79);
+                margin: 24px 0 0;
+            }
+            .post-item a.post-title--link{
+                text-decoration: none;
+            }
+            .post-item a.post-title--link:hover h1{
+                color: #000;
             }
             .post-item .post-footer--mobile h1.post-title--mobile{
                 font-weight: 300;
@@ -87,6 +105,17 @@
                 right: 30px;
                 top: -18px;
             }
+            .read-link{
+                text-decoration: none;
+                margin-left: 24px;
+                color: var(--app-accent-color);
+                font-weight: 600;
+                font-size: 18px;
+
+            }
+            .post-time{
+                color: #909090;
+            }
             /* Smartphones (portrait) ----------- */
             @media only screen and (max-width : 425px) {
                 :host{
@@ -111,9 +140,10 @@
             <!-- Post header -->
             <dom-if if="[[!smallScreen]]">
                 <template>
-                    <header class="layout horizontal center" style="border-color:#00bcd4">
+                    <header class="layout horizontal center" style$="border-color:[[data.color.accent]]">
+                        <span class="post-time"><iron-icon icon="dapp-icons:clock"></iron-icon> 1 Week ago</span>
                         <span class="flex"></span>
-                        <span class="author-name">Miki Matusushita</span>
+                        <span class="author-name">[[data.author_name]]</span>
                         <dapp-avatar src$="[[data.avatar]]" height="50px" width="50px"></dapp-avatar>
                     </header>
                 </template>
@@ -124,26 +154,31 @@
                 <iron-image
                     sizing="cover" 
                     preload 
-                    src="https://blog.pinterest.com/sites/blog/files/article/fields/field_image/pinsights-forecast-may-blog-header.png"></iron-image>
+                    src="[[data.image.medium]]"></iron-image>
             </figure>
 
-            <!-- Post Slug-->
+            <!-- Post Excert-->
             <dom-if if="[[!smallScreen]]">
                 <template>
-                    <p class="post-slug">Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet. Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet.liberavisse. Nam ea dicam hendrerit Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet. liberavisse. Nam ea dicam hendrerit liberavisse. Nam ea dicam hendrerit</p>
+                    <a href$="/post/[[data.slug]]" class="post-title--link" alt$="read [[data.title]]">
+                        <h1 class="post-title">[[data.title]]</h1>
+                    </a>
+                    <p class="post-excert">Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet. Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet.liberavisse. Nam ea dicam hendrerit Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet. liberavisse. Nam ea dicam hendrerit liberavisse. Nam ea dicam hendrerit</p>
+                    <a href$="/post/[[data.slug]]" alt$="read [[data.title]]" class="read-link">Read <iron-icon icon="dapp-icons:chevron-right"></iron-icon></a>
+                    <span style="display:block; margin-bottom:16px;"></span>
                 </template>
             </dom-if>
 
             <!-- Post footer -->
             <dom-if if="[[smallScreen]]">
                 <template>
-                    <footer class="post-footer--mobile" style="background-color:#00BCD4">
+                    <footer class="post-footer--mobile" style$="background-color:[[data.color.accent]]">
                         <div class="owner-info--mobile">
                             <dapp-avatar src$="[[data.avatar]]" height="50px" width="50px"></dapp-avatar>
-                            <span class="authors-name--mobile">Miki Matusushita</span>
+                            <span class="authors-name--mobile">[[data.author_name]]</span>
                         </div>
-                        <paper-fab mini="" icon="my-icons:favorite" class="favorite-fap"></paper-fab>
-                        <h1 class="post-title--mobile">7 best ways to tie a headwrap - fashion africa</h1>
+                        <paper-fab mini="" icon="dapp-icons:heart-empty" class="favorite-fab"></paper-fab>
+                        <h1 class="post-title--mobile">[[data.title]]</h1>
                     </footer>
                 </template>
             </dom-if>
@@ -156,11 +191,11 @@
 
             static get is() { return 'dapp-post-item'; }
 
-            static get properties() {
-                return {
-                    
-                };
-            }
+            static get properties() { return{
+                data: {
+                    type:Object
+                }
+            }}
 
             constructor() {
                 super();

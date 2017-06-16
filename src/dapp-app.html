@@ -11,21 +11,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="components/dapp-icons/my-icons.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 
+<!-- Components -->
+<link rel="import" href="components/dapp-icons/dapp-icons.html">
+<link rel="import" href="components/dapp-header/dapp-header.html">
+
+<!-- Pages -->
 <link rel="lazy-import" href="pages/dapp-home.html">
-<link rel="lazy-import" href="pages/my-view2.html">
-<link rel="lazy-import" href="pages/my-view3.html">
-<link rel="lazy-import" href="pages/my-view404.html">
+<link rel="lazy-import" href="pages/dapp-post.html">
+<!--<link rel="lazy-import" href="pages/my-view3.html">
+<link rel="lazy-import" href="pages/my-view404.html">-->
 
 <dom-module id="dapp-app">
   <template>
@@ -34,6 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --app-primary-color: #4285f4;
         --app-secondary-color: black;
         --app-text-color: rgba(0, 0, 0, 0.64);
+        --app-accent-color: #ff4081;
         display: block;
       }
 
@@ -41,15 +46,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: none;
       }
 
-      app-header {
-        color: #fff;
-        background-color: var(--app-primary-color);
-      }
-
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
 
+      
       .drawer-list {
         margin: 0 20px;
       }
@@ -68,6 +69,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
+    <firebase-app api-key="AIzaSyBXNdHOZT_UW2BB2wj1IfdqtOVv__NFPlc" 
+                  auth-domain="afrodapp-blog.firebaseapp.com" 
+                  database-url="https://afrodapp-blog.firebaseio.com">
+    </firebase-app>
+
+  	<firebase-auth id="auth" provider="google" user="{{auth}}" on-error="showError"></firebase-auth>
+
     <app-location route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
@@ -77,20 +85,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-drawer-layout fullbleed force-narrow>
       <!-- Drawer content -->
-      <app-drawer id="drawer" slot="drawer">
+      <!--<app-drawer id="drawer" slot="drawer">
         <app-toolbar>Menu</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="home" href="home">View One</a>
           <a name="view2" href="view2">View Two</a>
           <a name="view3" href="view3">View Three</a>
         </iron-selector>
-      </app-drawer>
+      </app-drawer>-->
 
       <!-- Main content -->
-      <!--<app-header-layout has-scrolling-region>
 
-       
-              </app-header-layout-->
+      <iron-media-query query="max-width: 767px" query-matches="{{smallScreen}}"></iron-media-query>
+           <!-- Header -->
+      <dom-if if="[[_shouldRenderHeader]]">
+        <template>
+          <dapp-header page="[[page]]"></dapp-header>
+        </template>
+      </dom-if>
+          
 
         <iron-pages
             selected="[[page]]"
@@ -98,7 +111,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             fallback-selection="view404"
             role="main">
           <dapp-home name="home"></dapp-home>
-          <my-view2 name="view2"></my-view2>
+          <dapp-post name="post"></dapp-post>
           <my-view3 name="view3"></my-view3>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
@@ -121,6 +134,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           rootPattern: String,
           routeData: Object,
           subroute: String,
+
+          _shouldRenderHeader: {
+          computed: '_computeShouldRenderHeader(smallScreen, page)'
+        }
         };
       }
 
@@ -150,9 +167,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.page = page || 'home';
 
         // Close a non-persistent drawer when the page & route are changed.
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
+        // if (!this.$.drawer.persistent) {
+        //   this.$.drawer.close();
+        // }
       }
 
       _pageChanged(page) {
@@ -167,6 +184,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _showPage404() {
         this.page = 'view404';
+      }
+
+      // Sometimes we dont want to show the header
+      _computeShouldRenderHeader(smallScreen, page){
+          if(smallScreen && page === 'home') {
+            return false;
+          }
+          return true;
       }
     }
 

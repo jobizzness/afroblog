@@ -1,16 +1,15 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/my-app.html",
+  "shell": "src/dapp-app.html",
   "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
-    "src/my-view3.html",
-    "src/my-view404.html"
+    "src/pages/dapp-home.html",
+    "src/pages/dapp-post.html"
   ],
   "sources": [
-    "src/**/*",
+    "src/**/**/*",
     "images/**/*",
-    "bower.json"
+    "bower.json",
+    "bower_components/app-storage/app-indexeddb-mirror/*.js"
   ],
   "extraDependencies": [
     "manifest.json",
@@ -18,5 +17,21 @@
   ],
   "lint": {
     "rules": ["polymer-2"]
-  }
+  },
+   "builds": [{
+    "name": "es5-bundled",
+    "bundle": true,
+    "js": {"minify": true, "compile": true},
+    "css": {"minify": true},
+    "html": {"minify": true},
+    "addServiceWorker": true,
+    "addPushManifest": true
+  },{
+    "name": "es6-unbundled",
+    "js": {"minify": true},
+    "css": {"minify": true},
+    "html": {"minify": true},
+    "addServiceWorker": true,
+    "addPushManifest": true
+  }]
 }

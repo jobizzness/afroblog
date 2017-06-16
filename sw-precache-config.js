@@ -9,12 +9,44 @@
  */
 
 /* eslint-env node */
-
 module.exports = {
   staticFileGlobs: [
     '/index.html',
     '/manifest.json',
-    '/bower_components/webcomponentsjs/*',
+    '/images/**/*.{css,png,jpg,gif,svg}',
+    '/src/**/**/**/**/.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}',
+    '/bower_components/webcomponentsjs/webcomponents-lite.min.js',
+    '/bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js',
+    '/bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js',
+    '/bower_components/app-storage/app-indexeddb-mirror/common-worker.html'
   ],
+  ignoreUrlParametersMatching: [
+    /app-indexeddb-mirror/
+  ],
+  skipWaiting: true,
   navigateFallback: 'index.html',
+  runtimeCaching: [{
+  urlPattern: /https:\/\/firebasestorage\.googleapis\.com\/(.*?)\/(.*?)\/afrodapp-blog\.appspot\.com\/(.*)/,
+  handler: 'fastest',
+  options: {
+    cache: {
+      maxEntries: 20,
+      name: 'media'
+    }
+  }
+}
+// ,
+// {
+//   urlPattern: /\/(.*?)/,
+//   handler: 'fastest',
+//   options: {
+//     cache: {
+//       maxEntries: 10,
+//       name: 'pages'
+//     }
+//   }
+// }
+]
+
+
 };

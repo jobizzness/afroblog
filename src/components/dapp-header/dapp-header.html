@@ -1,23 +1,93 @@
-[<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <!--
 `<dapp-header>` is Description
 
 @element Dapp
 -->
-<dom-module id="dapp-element">
+<dom-module id="dapp-header">
     <template>
-        <style>
+        <style include="shared-styles iron-flex iron-flex-alignment">
             :host {
                 display: block
             }
+            app-header {
+                color: var(--app-text-color);
+                background-color: white;
+            }
+            #logo{
+                height: 40px;
+                width:40px;
+            }
+            .logo--link{
+                padding: 0 24px;
+                display: block;
+                border-right: 1px solid #eee;
+            }
+            paper-tabs{
+                width: 100%;
+                height: 100%;
+                --paper-tabs-selection-bar-color: var(--app-accent-color);
+            }
+            paper-tab{
+                --paper-tab-ink:#eee;
+                padding: 0 16px;
+            }
+            nav{
+                margin:0 16px;
+                height: 100%;
+            }
+            paper-tabs paper-tab .link {
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+                color: rgba(0, 0, 0, 0.74);
+                text-decoration: none;
+                font-weight: 600;
+                outline: none;
+                font-size: 14px;
+            }
         </style>
+        <iron-media-query query="max-width: 425px" query-matches="{{smallScreen}}"></iron-media-query>
 
-             <!--<app-header slot="header" condenses reveals effects="waterfall">
-        <app-toolbar>
-          <div main-title>Home Page</div>
-        </app-toolbar>
-      </app-header>-->
+        <app-header slot="header" condenses reveals effects="waterfall">
+            <app-toolbar>
+                <dom-if if="[[!smallScreen]]">
+                    <template>
+                        <a href="/" title="home" alt="logo" class="logo--link"><iron-image
+                            id="logo"
+                            sizing="cover" 
+                            preload 
+                            src="https://www.afrodapp.com/images/logo.png">
+                        </iron-image></a>
+                    </template>
+                </dom-if>
+                <div main-title></div>
+                <!-- Navigation -->
+                <nav>
+                    <paper-tabs selected="[[page]]" attr-for-selected="name">
+                        <paper-tab name="home">
+                            <a href="/" tabindex="-1" class="link">Whats Hot?</a>
+                        </paper-tab>
+                        <paper-tab>
+                            <a href="#item1" tabindex="-1" class="link">Meet Afrodapp</a>
+                        </paper-tab>
+                        <paper-tab>
+                            <a href="#item1" tabindex="-1" class="link">Press</a>
+                        </paper-tab>
+                        <paper-tab>
+                            <a href="#item1" tabindex="-1" class="link">Get Featured</a>
+                        </paper-tab>
+                    </paper-tabs>
+                </nav>
+            </app-toolbar>
+            
+        </app-header>
 
     </template>
 
@@ -26,9 +96,10 @@
 
             static get is() { return 'dapp-header'; }
 
-            static get properties() {
-                return {
-                    
+            static get properties() {return {
+                    page:{
+                        type: String
+                    }
                 };
             }
 
@@ -36,13 +107,12 @@
                 super();
             }
 
-            ready() {
-                super.ready();
-
-                Polymer.RenderStatus.afterNextRender(this, function() {
+            // ready() {
+            //     super.ready();
+            //     Polymer.RenderStatus.afterNextRender(this, function() {
                     
-                });
-            }
+            //     });
+            // }
 
         }
 

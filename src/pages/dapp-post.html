@@ -8,10 +8,10 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="shared-styles.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
 
-<dom-module id="my-view2">
+<dom-module id="dapp-post">
   <template>
     <style include="shared-styles">
       :host {
@@ -21,19 +21,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <div class="card">
-      <div class="circle">2</div>
-      <h1>View Two</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-    </div>
+    
   </template>
 
   <script>
-    class MyView2 extends Polymer.Element {
-      static get is() { return 'my-view2'; }
+    class DappPost extends Polymer.Element {
+      static get is() { return 'dapp-post'; }
+
+      static get properties(){ return{
+        post:{
+          type:Object
+        }
+      }}
     }
 
-    window.customElements.define(MyView2.is, MyView2);
+    window.customElements.define(DappPost.is, DappPost);
   </script>
 </dom-module>
