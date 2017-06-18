@@ -21,7 +21,7 @@
     "headers": [
       {
         "source": "/",
-        "headers": [{"key": "Link", "value": "</bower_components/polymer/polymer.html>;rel=preload;as=document,</bower_components/app-layout/app-header/app-header.html>;rel=preload;as=document,</bower_components/neon-animation/neon-animated-pages.html>;rel=preload;as=document,</bower_components/iron-selector/iron-selector.html>;rel=preload;as=document,</src/biness-app.html>;rel=preload;as=document,</src/biness-home-mobile.html>;rel=preload;as=document,</bower_components/polymerfire/polymerfire.html>;rel=preload;as=document,</bower_components/polymerfire/polymerfire.html>;rel=preload;as=document,</src/shared-styles.html>;rel=preload;as=document,</bower_components/neon-animation/animations/fade-out-animationl>;rel=preload;as=document,</bower_components/neon-animation/animations/slide-from-bottom-animation.html>;rel=preload;as=document"}]
+        "headers": [{"key": "Link", "value": "</bower_components/polymerfire/polymerfire.html>;rel=preload;as=document,</bower_components/polymerfire/polymerfire.html>;rel=preload;as=document,</src/shared-styles.html>;rel=preload;as=document"}]
       }
     ]
   }

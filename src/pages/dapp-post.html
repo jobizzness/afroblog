@@ -1,27 +1,104 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../shared-styles.html">
-
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../components/dapp-icons/dapp-icons.html">
 <dom-module id="dapp-post">
   <template>
-    <style include="shared-styles">
+    <style include="shared-styles iron-flex iron-flex-alignment">
       :host {
         display: block;
-
-        padding: 10px;
       }
+      .post-figure{
+        height: 60vh;
+        margin: 0;
+      }
+      .post-content{
+        margin: 16px 0;
+        padding: 16px;
+        background-color: #fff;
+        box-shadow: 0 1px 1px rgba(0,0,0,.1) !important;
+      }
+      .post-content p{
+          color: rgba(0, 0, 0, 0.88);
+          line-height: 28px;
+          font-size: 17px;
+      }
+      .post-content p>a{
+          text-decoration: none;
+          color: #2196F3;
+      }
+      .time{
+          font-size: 16px;
+          color: var(--app-accent-color);
+          font-weight: 500;
+      }
+      .time>iron-icon{
+          width: 13px;
+          margin-right: 4px;
+      }
+      .post-title {
+            font-weight: 600;
+            font-size: 24px;
+            color: var(--app-text-color);
+            margin: 24px 0;
+        }
+      .post-author{
+        color: var(--app-text-color);
+        font-size: 17px;
+        font-weight: 500;
+      }
+       /* Smartphones (portrait) ----------- */
+            @media only screen and (max-width : 425px) {
+              .post-content{
+                margin:0;
+              }
+              .time, .post-author{
+                font-size: 14px;
+              }
+            }
     </style>
 
-    
+    <!-- app-route provides the name of the category. -->
+        <app-route
+                route="[[route]]"
+                pattern="/:slug"
+                data="{{routeData}}"></app-route>
+
+    <article class="content">
+      <!-- Could be anything-->
+      <figure class="post-figure">
+        <iron-image style="width:100%; height:100%; background-color: #eee;"
+                    src="[[post.image.medium]]"
+                    sizing="cover"
+                    preload fade
+                            ></iron-image>
+            <figcaption>
+
+            </figcaption>
+      </figure>
+      <section class="post-content">
+          <header>
+            <dom-if if="[[post]]">
+              <template>
+                <h1 class="post-title">[[post.title]]</h1>
+                  <div class="layout horizontal post-meta">
+                      <span class="post-author">Written by: <span>[[post.author_name]]</span></span>
+                      <span class="flex"></span>
+                      <span class="time"><iron-icon icon="dapp-icons:time"></iron-icon><time>1 Week ago</time></span> 
+                  </div>
+              </template>
+            </dom-if>
+          </header>
+          <main id="postRef"></main>
+      </section>
+    </article>
+    <header>
+
+    </header>
   </template>
 
   <script>
@@ -30,9 +107,70 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties(){ return{
         post:{
-          type:Object
-        }
+          type: Object,
+          observer: '_postChanged',
+          notify: true
+        },
+        content: {
+          type: String,
+          notify: true
+        },
+        routeData: String,
+
+
       }}
+
+      static get observers() {
+        return [
+          // Observer method name, followed by a list of dependencies, in parenthesis
+        ]
+      }
+      constructor(){
+        super();
+      }
+
+      ready(){
+        super.ready();
+        
+        //We check if we already have post
+        //Sometime we only need to lazy load the content
+        if(!this.post){
+          return this._getPost(this.routeData.slug);
+        }
+          
+      }
+
+      // Will get and set the posts content
+      _getPostContent(){
+        console.log(this.post);
+         firebase.database().ref('/postContent/').child(this.post.$key).once('value', (snapshot) => {
+            this.$.postRef.innerHTML = snapshot.val()? snapshot.val().content: null;
+        });
+      }
+
+      // checks if we need to get post content or not
+      _postChanged(post){
+        if(post && !this.content){
+          this._getPostContent();
+        }
+      }
+
+      _postContentChanged(content){
+      }
+
+      _getPost(slug){
+        firebase.database().ref('/posts').orderByChild('slug_status').equalTo(slug+'_published')
+              .on('value', (snapshot) => {
+                  if (snapshot.val()) {
+                      snapshot.forEach((childSnapshot) => {
+                        let post = childSnapshot.val();
+                        post.$key = Object.keys(snapshot.val())[0];
+                        this.post = post;
+                        //this.loading = false;
+                      });
+                  }
+              });
+      }
     }
 
     window.customElements.define(DappPost.is, DappPost);

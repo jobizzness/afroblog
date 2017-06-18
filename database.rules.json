@@ -17,6 +17,10 @@
       ".read": true,
       ".write": true
     },
+    "postContent": {
+      ".read": true,
+      ".write": true
+    },
     "projects": {
       ".read": true,
       ".write": true

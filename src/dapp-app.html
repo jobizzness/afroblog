@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 
 <!-- Components -->
 <link rel="import" href="components/dapp-icons/dapp-icons.html">
@@ -110,8 +111,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <dapp-home name="home"></dapp-home>
-          <dapp-post name="post"></dapp-post>
+          <dapp-home name="home" post="{{post}}"></dapp-home>
+          <dapp-post name="post" post="[[post]]" route="[[subroute]]"></dapp-post>
           <my-view3 name="view3"></my-view3>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
@@ -170,6 +171,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // if (!this.$.drawer.persistent) {
         //   this.$.drawer.close();
         // }
+      }
+      _listenForEvents(){
       }
 
       _pageChanged(page) {

@@ -78,6 +78,9 @@
                 font-weight: 300;
                 font-size: 16px;
                 margin:0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 padding-top: 8px;
                 color: white;
                 text-transform: capitalize;
@@ -122,7 +125,7 @@
                     padding: 8px;
                 }
                 .post-item figure,  .post-item figure iron-image{
-                    height:275px; 
+                    height:225px; 
                 }
                 dapp-avatar{
                     margin: 0;
@@ -150,12 +153,14 @@
             </dom-if>
 
             <!-- Figure Media -->
-            <figure>
-                <iron-image
-                    sizing="cover" 
-                    preload 
-                    src="[[data.image.medium]]"></iron-image>
-            </figure>
+            <a href$="/post/[[data.slug]]">
+                <figure>
+                    <iron-image
+                        sizing="cover" 
+                        preload 
+                        src="[[data.image.medium]]"></iron-image>
+                </figure>
+            </a>
 
             <!-- Post Excert-->
             <dom-if if="[[!smallScreen]]">
@@ -173,12 +178,14 @@
             <dom-if if="[[smallScreen]]">
                 <template>
                     <footer class="post-footer--mobile" style$="background-color:[[data.color.accent]]">
-                        <div class="owner-info--mobile">
-                            <dapp-avatar src$="[[data.avatar]]" height="50px" width="50px"></dapp-avatar>
-                            <span class="authors-name--mobile">[[data.author_name]]</span>
-                        </div>
-                        <paper-fab mini="" icon="dapp-icons:heart-empty" class="favorite-fab"></paper-fab>
-                        <h1 class="post-title--mobile">[[data.title]]</h1>
+                        <a href$="/post/[[data.slug]]" alt$="read [[data.title]]">
+                            <div class="owner-info--mobile">
+                                <dapp-avatar src$="[[data.avatar]]" height="50px" width="50px"></dapp-avatar>
+                                <span class="authors-name--mobile">[[data.author_name]]</span>
+                            </div>
+                            <paper-fab mini="" icon="dapp-icons:heart-empty" class="favorite-fab"></paper-fab>
+                            <h1 class="post-title--mobile">[[data.title]]</h1>
+                        </a>
                     </footer>
                 </template>
             </dom-if>
