@@ -5,7 +5,11 @@
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<!-- App Components-->
 <link rel="import" href="../components/dapp-icons/dapp-icons.html">
+<link rel="import" href="../components/article-image/article-image.html">
 <dom-module id="dapp-post">
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment">
@@ -51,6 +55,14 @@
         font-size: 17px;
         font-weight: 500;
       }
+      paper-fab#favorite-post{
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+        }
+        article-image{
+          max-width: 500px;
+        }
        /* Smartphones (portrait) ----------- */
             @media only screen and (max-width : 425px) {
               .post-content{
@@ -58,6 +70,27 @@
               }
               .time, .post-author{
                 font-size: 14px;
+              }
+              .post-figure{
+                height: 40vh;
+                margin: 0;
+              }
+              #flip{
+                will-change: transform;
+                perspective: 500px;
+                position: relative;
+                width: 100%;
+                height: 510px;
+              }
+              article-image{
+                  margin: 8px -16px;
+              }
+              .cover, .article{
+                backface-visibility: hidden;
+                position: absolute;
+                width:100%;
+                overflow: hidden;
+                height: 100%;
               }
             }
     </style>
@@ -68,33 +101,46 @@
                 pattern="/:slug"
                 data="{{routeData}}"></app-route>
 
-    <article class="content">
-      <!-- Could be anything-->
-      <figure class="post-figure">
-        <iron-image style="width:100%; height:100%; background-color: #eee;"
-                    src="[[post.image.medium]]"
-                    sizing="cover"
-                    preload fade
-                            ></iron-image>
-            <figcaption>
+    <article class="content" id="flip">
 
-            </figcaption>
-      </figure>
-      <section class="post-content">
-          <header>
-            <dom-if if="[[post]]">
-              <template>
-                <h1 class="post-title">[[post.title]]</h1>
-                  <div class="layout horizontal post-meta">
-                      <span class="post-author">Written by: <span>[[post.author_name]]</span></span>
-                      <span class="flex"></span>
-                      <span class="time"><iron-icon icon="dapp-icons:time"></iron-icon><time>1 Week ago</time></span> 
-                  </div>
-              </template>
-            </dom-if>
-          </header>
-          <main id="postRef"></main>
+      <section class="cover">
+          hehehe
       </section>
+      <section class="article">
+          <!-- Could be anything-->
+        <figure class="post-figure">
+          <iron-image style="width:100%; height:100%; background-color: #eee;"
+                      src="[[post.image.medium]]"
+                      sizing="cover"
+                      preload fade
+          ></iron-image>
+        </figure>
+        <section class="post-content">
+            <header>
+              <dom-if if="[[post]]">
+                <template>
+                  <h1 class="post-title">[[post.title]]</h1>
+                    <div class="layout horizontal post-meta">
+                        <span class="post-author">Written by: <span>[[post.author_name]]</span></span>
+                        <span class="flex"></span>
+                        <span class="time"><iron-icon icon="dapp-icons:time"></iron-icon><time>1 Week ago</time></span> 
+                    </div>
+                </template>
+              </dom-if>
+            </header>
+            <main id="postRef"></main>
+            
+        </section>
+      </section>
+      
+      <!-- Favorite button-->
+        <paper-fab
+          id="favorite-post"
+            icon="dapp-icons:favorite-border"
+            on-tap="createPost"
+            disabled="[[!online]]"
+            aria-label="Add note">
+        </paper-fab>
     </article>
     <header>
 

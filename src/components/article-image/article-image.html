@@ -1,0 +1,68 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="../../shared-styles.html">
+<dom-module id="article-image">
+	<template>
+		<style include="shared-styles" is="custom-style">
+			:host {
+				display: block;
+			}
+            .image-description{
+                margin: 0;
+                text-align: center;
+            }
+			.image-link>div{
+				position: relative;
+			}
+            .image-description p{
+				margin: 0;
+				font-style: italic;
+				font-weight: 500;
+				font-size: 14px;
+				color: rgba(0, 0, 0, 0.48);
+            }
+            .image{
+                min-height: 400px;
+                width: 100%;
+            }
+		</style>
+			<div>
+
+			<iron-image
+                    class="image"
+					style="background-color: lightgray;"
+					sizing="cover"
+					alt="[[description]]"
+					preload
+					src="[[src]]"></iron-image>
+			</div>
+		<a href="[[refrence]]" class="image-description"><p>[[description]]</p></a>
+
+	</template>
+	<script>
+        class ArticleImage extends Polymer.Element {
+        
+            static get is() { return 'article-image'; }
+
+            static get properties(){ return {
+                src:{
+                    type:String,
+                    reflectAttribute:true
+                },
+                description:{
+                    type:String,
+                    reflectAttribute:true
+                }
+            }}
+        }
+		// Polymer({
+		// 	is: '',
+
+        //     properties:{
+        //         
+        //     }
+		// });
+        window.customElements.define(ArticleImage.is, ArticleImage);
+	</script>
+</dom-module>

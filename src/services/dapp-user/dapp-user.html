@@ -1,0 +1,38 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/polymerfire/polymerfire.html">
+<dom-module id="dapp-user">
+	<script>
+		(function() {
+			'use strict';
+			Polymer({
+				is: 'dapp-user',
+
+				properties: {
+					uid: {
+						type: String,
+						reflectToAttribute: true,
+						notify: true,
+						observer: '_uidChanged'
+					},
+					user: {
+						type: Object,
+						value: null,
+						notify: true
+					}
+				},
+
+				_uidChanged: function (uid) {
+
+					if (this.uid) {
+                        firebase.database().ref('/users/' + uid).once('value', function(snapshot) {
+                            if (snapshot.val()) {
+                                this.user = snapshot.val();
+                            }
+                        }.bind(this));
+
+					}
+				}
+			});
+		})();
+	</script>
+</dom-module>

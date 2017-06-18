@@ -1,11 +1,15 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<!-- App Components-->
+<link rel="import" href="../dapp-icons/dapp-icons.html">
+<link rel="import" href="../../shared-styles.html">
 <!--
 `<dapp-header>` is Description
 
@@ -16,10 +20,6 @@
         <style include="shared-styles iron-flex iron-flex-alignment">
             :host {
                 display: block
-            }
-            app-header {
-                color: var(--app-text-color);
-                background-color: white;
             }
             #logo{
                 height: 40px;
@@ -55,7 +55,7 @@
         </style>
         <iron-media-query query="max-width: 425px" query-matches="{{smallScreen}}"></iron-media-query>
 
-        <app-header slot="header" condenses reveals effects="waterfall">
+        
             <app-toolbar>
                 <dom-if if="{{_shouldShowLogo}}">
                     <template>
@@ -69,7 +69,7 @@
                 </dom-if>
                 <div main-title></div>
                 <!-- Navigation -->
-                <dom-if if="[[!smallScreen]]">
+                <dom-if if="{{_shouldRenderTopNav}}">
                     <template>
                         <nav>
                             <paper-tabs selected="[[page]]" attr-for-selected="name">
@@ -77,39 +77,20 @@
                                     <a href="/" tabindex="-1" class="link">Whats Hot?</a>
                                 </paper-tab>
                                 <paper-tab>
-                                    <a href="#item1" tabindex="-1" class="link">Meet Afrodapp</a>
+                                    <a href="#" tabindex="-1" class="link">Meet Afrodapp</a>
                                 </paper-tab>
                                 <paper-tab>
                                     <a href="#item1" tabindex="-1" class="link">Press</a>
                                 </paper-tab>
                                 <paper-tab>
-                                    <a href="#item1" tabindex="-1" class="link">Get Featured</a>
+                                    <a href="/feature" tabindex="-1" class="link">Get Featured</a>
                                 </paper-tab>
                             </paper-tabs>
                         </nav>
                     </template>
                 </dom-if>
-                <!-- Only for mobile not home pages-->
-                <!-- Back Button-->
-                <dom-if if="[[smallScreen]]">
-                    <template>
-                        <!--<dom-if>
-                            <template if="[[!isHome]]">
-                                <paper-icon-button icon="dapp-icons:back" on-tap="goBack"></paper-icon-button>
-                            </template>
-                        </dom-if>-->
-
-
-                        <!--<div main-title=""></div>-->
-                        <!-- Share Button -->
-                        <template is="dom-if" if="[[!isHome]]">
-                            <paper-icon-button icon="dapp-icons:share" on-tap="share"></paper-icon-button>
-                        </template>
-                    </template>
-                </dom-if>
             </app-toolbar>
             
-        </app-header>
 
     </template>
 
@@ -125,14 +106,30 @@
                     _shouldShowLogo: {
                         computed: '_computeShouldShowLogo(smallScreen, page)'
                     },
-                    smallScreen: Boolean
+                    isHome:{
+                        computed: '_computeIsHome(page)'
+                    },
+                    _shouldRenderTopNav:{
+                        computed: '_computeShouldRenderTopNav(smallScreen, user)'
+                    },
+                    smallScreen: Boolean,
+                    user: Object
                 };
             }
 
             constructor() {
                 super();
             }
+            _computeIsHome(page){
+                return page === 'home';
+            }
 
+            _computeShouldRenderTopNav(smallScreen, user){
+                if(smallScreen || user){
+                    return false;
+                }
+                return true;
+            }
             // ready() {
             //     super.ready();
             //     Polymer.RenderStatus.afterNextRender(this, function() {

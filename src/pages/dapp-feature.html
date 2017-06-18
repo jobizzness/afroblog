@@ -8,15 +8,14 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="shared-styles.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../shared-styles.html">
 
-<dom-module id="my-view3">
+<dom-module id="dapp-feature">
   <template>
     <style include="shared-styles">
       :host {
         display: block;
-
         padding: 10px;
       }
     </style>
@@ -30,10 +29,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class MyView3 extends Polymer.Element {
-      static get is() { return 'my-view3'; }
+    class DappFeature extends Polymer.Element {
+      static get is() { return 'dapp-feature'; }
     }
 
-    window.customElements.define(MyView3.is, MyView3);
+    window.customElements.define(DappFeature.is, DappFeature);
   </script>
 </dom-module>
