@@ -22,9 +22,15 @@
 				font-size: 14px;
 				color: rgba(0, 0, 0, 0.48);
             }
-            .image{
-                min-height: 400px;
+			.image{
+				max-width: 900px;
+			}
+            /* Smartphones (portrait) ----------- */
+            @media only screen and (max-width : 425px) {
+              .image{
                 width: 100%;
+                --iron-image-width: 100%;
+              }
             }
 		</style>
 			<div>
@@ -32,12 +38,12 @@
 			<iron-image
                     class="image"
 					style="background-color: lightgray;"
-					sizing="cover"
 					alt="[[description]]"
 					preload
 					src="[[src]]"></iron-image>
+					<a href="[[refrence]]" class="image-description"><p>[[description]]</p></a>
 			</div>
-		<a href="[[refrence]]" class="image-description"><p>[[description]]</p></a>
+		
 
 	</template>
 	<script>
