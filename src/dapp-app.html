@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- Components -->
 <link rel="import" href="components/dapp-icons/dapp-icons.html">
 <link rel="import" href="components/dapp-header/dapp-header.html">
-
+<link rel="import" href="shared-styles.html">
 <!-- Services -->
 <link rel="import" href="services/dapp-user/dapp-user.html">
 
@@ -46,6 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --app-secondary-color: black;
         --app-text-color: rgba(0, 0, 0, 0.64);
         --app-accent-color: #ff4081;
+        --app-background-color: #FAFAFA;
         display: block;
       }
         app-header {
@@ -118,21 +119,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <my-view404 name="view404"></my-view404>
 
           <!-- Only for guest -->
-          <dom-if if="[[!user]]">
-            <template>
-              <dapp-login name="login" on-login="login"></dapp-login>
-            </template>
-          </dom-if>
+          <dapp-login name="login" on-login="login"></dapp-login>
           
           <!-- Admin views -->
-          <dom-if if="[[user]]">
-            <template>
-                <dapp-dashboard name="dashboard"></dapp-dashboard>
-                <dapp-posts name="posts" route="[[subroute]]" id="dappPosts" on-edit="_editPost"></dapp-posts>
-            </template>
-          </dom-if>
+          <dapp-dashboard name="dashboard"></dapp-dashboard>
+          <dapp-posts name="posts" route="[[subroute]]" id="dappPosts" on-edit="_editPost"></dapp-posts>
+
 
         </iron-pages>
+
         <!-- Additional Components -->
         <dom-if if="[[user]]">
           <template>
@@ -145,7 +140,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </dom-if>
 
         <!-- Post editor -->
-        <dapp-post-editor id="postEditor"></dapp-post-editor>
+        <dapp-post-editor id="postEditor" route="[[subroute]]"></dapp-post-editor>
 
       </app-header-layout>
     </app-drawer-layout>
@@ -263,7 +258,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.postEditor.open(post);
           }
       }
-      
+
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
         var resolvedPageUrl = this.resolveUrl('pages/dapp-' + page + '.html');

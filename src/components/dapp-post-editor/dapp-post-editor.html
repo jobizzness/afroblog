@@ -1,5 +1,13 @@
-[<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <!--
 `<DappPostEditor>` is Description
 
@@ -7,13 +15,75 @@
 -->
 <dom-module id="dapp-post-editor">
     <template>
-        <style>
-            :host {
-                display: block
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            #dialog {
+                display: block;
+                padding: 0 8px;
+                border-bottom: 3px solid var(--app-accent-color);
+                margin: 0;
+                width: 60vw;
+                background: var(--app-background-color);
+                max-height: 100vh;
+                /* Keep overflow visible so vaadin-date-picker dropdown won't clip */
+                overflow: visible;
+            }
+              iron-autogrow-textarea {
+                display: block;
+                box-sizing: border-box;
+                width: 100%;
+                border: 0;
+                margin: 1em 0 0;
+                padding: 0;
+                font-size: 1em;
+            }
+            .save-button {
+                background: var(--app-accent-color);
+                color: var(--text-primary-color);
+            }
+            .cancel-button {
+                color: var(--primary-color);
+            }
+            .controls{
+                padding: 16px 0;
+                margin-top: 16px;
+            }
+            .controls paper-button{
+                    width: 150px;
             }
         </style>
 
         
+        <app-route route="{{route}}" pattern="/:action" data="{{routeData}}"></app-route>
+
+        <paper-dialog id="dialog" 
+                    opened="{{_showDialog(post, route)}}" 
+                    always-on-top>
+            <div class="layout horizontal">
+                <h2>[[action]] Post</h2>
+                <span class="flex"></span>
+                <paper-icon-button icon="dapp-icons:close" on-tap="close" class="close-button" dialog-dismiss></paper-icon-button>
+            </div>
+            
+            <!-- Form here -->
+            <form is="iron-form" method="post" action="/" id="form">
+
+                <paper-input name="title" label="Enter title here" required value="{{post.title}}"></paper-input>
+                <br>
+                
+                <iron-autogrow-textarea
+                    name="content"
+                    placeholder="Enter post content"
+                    value="{{value}}"
+                    bind-value="[[post.excert]]">
+                </iron-autogrow-textarea>
+
+                <div class="controls">
+                    <paper-button on-tap="_save" class="save-button">Save</paper-button>
+                    <paper-button on-tap="_cancel">Cancel</paper-button>
+                </div>
+
+            </form>
+        </paper-dialog>
 
     </template>
 
@@ -24,7 +94,9 @@
 
             static get properties() {
                 return {
-                    
+                    post:{
+                        type: Object
+                    }
                 };
             }
 
@@ -34,7 +106,7 @@
 
             ready() {
                 super.ready();
-
+                this.$.form.addEventListener('iron-form-presubmit', e => this._handleForm(e));
                 Polymer.RenderStatus.afterNextRender(this, function() {
                     
                 });
@@ -42,6 +114,27 @@
 
             open(post){
                 console.log(post);
+                if(post){
+                    this.post = post;
+                }
+            }
+
+            _save(){
+                console.log('saving post');
+            }
+
+            _cancel(){
+                this.post = null;
+                this.$.dialog.opened = false;
+            }
+            _showDialog(post, route) {
+                return post && (route.path === '/edit' || route.path === '/create');
+            }
+
+            _save(event){
+                var form = Polymer.dom(event).localTarget.parentElement;
+                // TODO
+                console.log(form);
             }
         }
 
