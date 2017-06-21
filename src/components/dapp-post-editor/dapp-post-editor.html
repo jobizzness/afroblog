@@ -1,0 +1,50 @@
+[<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<!--
+`<DappPostEditor>` is Description
+
+@element DappPostEditor
+-->
+<dom-module id="dapp-post-editor">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+
+        
+
+    </template>
+
+    <script>
+        class DappPostEditor extends Polymer.Element {
+
+            static get is() { return 'dapp-post-editor'; }
+
+            static get properties() {
+                return {
+                    
+                };
+            }
+
+            constructor() {
+                super();
+            }
+
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+
+            open(post){
+                console.log(post);
+            }
+        }
+
+        window.customElements.define(DappPostEditor.is, DappPostEditor);
+    </script>
+</dom-module>]

@@ -1,0 +1,50 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<!--
+`<dapp-dashboard>` is Description
+
+@element dapp-dashboard
+-->
+<dom-module id="dapp-dashboard">
+    <template>
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            :host {
+                display: block;
+                @apply --layout-horizontal;
+                @apply --layout-center-center;
+            }
+            
+        </style>
+
+        <p>Howdy! We are under construction 🙌.</p>
+
+    </template>
+
+    <script>
+        class DappDashboard extends Polymer.Element {
+
+            static get is() { return 'dapp-dashboard'; }
+
+            static get properties() {
+                return {
+                    
+                };
+            }
+
+            constructor() {
+                super();
+            }
+
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+
+        }
+
+        window.customElements.define(DappDashboard.is, DappDashboard);
+    </script>
+</dom-module>]

@@ -1,0 +1,191 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<!--
+`<dapp-dashboard>` is Description
+
+@element dapp-dashboard
+-->
+<dom-module id="dapp-posts">
+    <template>
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            :host {
+                display: block;
+            }
+            vaadin-grid#posts {
+                    font-family: Roboto, sans-serif;
+                    --divider-color: rgba(0, 0, 0, var(--dark-divider-opacity));
+                    --vaadin-grid-cell: {
+                    padding: 0;
+                };
+                --vaadin-grid-header-cell: {
+                    height: 56px;
+                    color: var(--primary-text-color);
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: rgba(0, 0, 0, 0.87);
+                    padding: 0 24px 0 24px;
+                };
+                --vaadin-grid-body-cell: {
+                    color: rgba(0, 0, 0, var(--dark-primary-opacity));
+                    font-size: 14px;
+                    padding: 8px 24px;
+                    cursor: pointer;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                };
+                --vaadin-grid-body-row-hover-cell: {
+                    background-color: var(--paper-grey-200);
+                };
+                --vaadin-grid-body-row-selected-cell: {
+                    background-color: var(--paper-grey-100);
+                };
+                --vaadin-grid-focused-cell: {
+                    box-shadow: none;
+                    font-weight: bold;
+                };
+            }
+            vaadin-grid#posts .cell.last {
+                padding-right: 24px;
+            }
+            vaadin-grid#posts .numeric {
+                text-align: right;
+            }
+            vaadin-grid#posts .comment {
+                white-space: normal;
+                line-height: 1.3;
+                padding: 1em 0;
+            }
+            vaadin-grid-sorter {
+                margin-right: -20px;
+                height: 56px;
+            }
+            #posts{
+                flex: 1;
+                color: var(--primary-text-color);
+                max-height: calc(100vh - 64px);
+                border: 0;
+                height: 100%;
+                margin:16px;
+            }
+            vaadin-grid#posts .draft{
+                color:#F44336;
+            }
+            vaadin-grid#posts .published{
+                color: #009688;
+            }
+            vaadin-grid#posts .draft, .published{
+                font-weight: 500;
+            }
+            vaadin-grid#posts .title, .tag{
+                color: #2196F3;
+            }
+            vaadin-grid#posts .actions{
+                color: var(--app-text-color);
+                font-size: 12px;
+            }
+        </style>
+        <!-- Query -->
+        <firebase-query
+            order-by-child="status"
+            data="{{posts}}"
+            path="/posts">
+        </firebase-query>
+
+            <vaadin-grid id="posts" items="[[posts]]" active-item="{{activeItem}}" multi-sort>
+
+                <vaadin-grid-column flex-grow="3" width="6em">
+                    <template class="header">Title</template>
+                    <template>
+                        <span class="title">[[item.title]]</span>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="6em">
+                    <template class="header">Author</template>
+                    <template>
+                        [[item.author_name]]
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="4em">
+                    <template class="header">Categories</template>
+                    <template>
+                        <span>headwrap</span>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="4em">
+                    <template class="header">Tags</template>
+                    <template>
+                        <span class="tag">#cute</span>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="4em">
+                    <template class="header">Date</template>
+                    <template>
+                        2017/02/12
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="4em">
+                    <template class="header">Status</template>
+                    <template>
+                        <span class$="[[item.status]]">[[item.status]]</span>
+                    </template>
+                </vaadin-grid-column>
+
+                <!-- Actions -->
+                <vaadin-grid-column width="4em">
+                    <template class="header">Actions</template>
+                    <template>
+                    <div style="display: flex" class="actions">
+                        <paper-icon-button icon="dapp-icons:edit" disabled="[[!auth]]" on-tap="editPost"></paper-icon-button>
+                        <paper-icon-button icon="dapp-icons:delete" disabled="[[!auth]]" on-tap="deletePost"></paper-icon-button>
+                    </div>
+                    </template>
+                </vaadin-grid-column>
+
+    </vaadin-grid>
+
+
+    </template>
+
+    <script>
+        class DappPosts extends Polymer.Element {
+
+            static get is() { return 'dapp-posts'; }
+
+            static get properties() {return {
+                    activeItem: {
+                        observer: '_activeItemChanged'
+                    }
+            }}
+
+            constructor() {
+                super();
+            }
+
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+
+            _activeItemChanged(item) {
+            //this.$.posts.selectedItems = item ? [item] : [];
+            item ? this.dispatchEvent(new CustomEvent('edit', {detail: {post: item}})): null;
+            //this.fire('edit-post', item);
+            }
+
+        }
+
+        window.customElements.define(DappPosts.is, DappPosts);
+    </script>
+</dom-module>]

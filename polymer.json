@@ -3,7 +3,8 @@
   "shell": "src/dapp-app.html",
   "fragments": [
     "src/pages/dapp-home.html",
-    "src/pages/dapp-post.html"
+    "src/pages/dapp-post.html",
+    "src/pages/dapp-login.html"
   ],
   "sources": [
     "src/**/**/*",
@@ -19,8 +20,7 @@
     "rules": ["polymer-2"]
   },
    "builds": [{
-    "name": "es5-bundled",
-    "bundle": true,
+    "name": "es5-unbundled",
     "js": {"minify": true, "compile": true},
     "css": {"minify": true},
     "html": {"minify": true},

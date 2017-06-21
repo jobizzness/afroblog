@@ -9,7 +9,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
@@ -21,7 +20,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
-<link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <!-- Components -->
 <link rel="import" href="components/dapp-icons/dapp-icons.html">
 <link rel="import" href="components/dapp-header/dapp-header.html">
@@ -34,8 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="pages/dapp-post.html">
 <link rel="lazy-import" href="pages/dapp-feature.html">
 <link rel="lazy-import" href="pages/dapp-login.html">
-<!--<link rel="lazy-import" href="pages/my-view3.html">
-<link rel="lazy-import" href="pages/my-view404.html">-->
+<link rel="lazy-import" href="pages/dapp-view404.html">
 
 <dom-module id="dapp-app">
   <template>
@@ -51,31 +52,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             color: var(--app-text-color);
             background-color: white;
         }
-      app-drawer-layout:not([narrow]) [drawer-toggle] {
-        display: none;
-      }
+
 
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
 
-      
-      .drawer-list {
-        margin: 0 20px;
+      #main-fab{
+        position: fixed;
+        bottom: 32px;
+        color:var(--app-accent-color);
+        --paper-fab-background:#fff;
+        right: 45px;
       }
 
-      .drawer-list a {
-        display: block;
-        padding: 0 16px;
-        text-decoration: none;
-        color: var(--app-secondary-color);
-        line-height: 40px;
-      }
-
-      .drawer-list a.iron-selected {
-        color: black;
-        font-weight: bold;
-      }
     </style>
 
     <firebase-app api-key="AIzaSyBXNdHOZT_UW2BB2wj1IfdqtOVv__NFPlc" 
@@ -97,28 +87,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-drawer-layout fullbleed>
 
-       <!-- Only for Admin -->
-          <dom-if if="{{_shouldRenderSideBar}}">
-            <template>
-                  <!-- Drawer content -->
-                  <app-drawer id="drawer" slot="drawer">
-                    <app-toolbar>Menu</app-toolbar>
-                    <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                      <a name="home" href="home">View One</a>
-                      <a name="view2" href="view2">View Two</a>
-                      <a name="view3" href="view3">View Three</a>
-                    </iron-selector>
-                  </app-drawer>
-            </template>
-          </dom-if>
 
+        <!-- Drawer For Admin -->
+        <app-drawer id="drawer" slot="drawer">
+          <admin-navigation></admin-navigation>
+        </app-drawer>
 
       <!-- Main content -->
-
       <iron-media-query query="max-width: 767px" query-matches="{{smallScreen}}"></iron-media-query>
 
       <app-header-layout header="[[dappHeader]]" id="headerLayout">
-        <app-header slot="header" condenses reveals effects="waterfall">
+        <app-header slot="header" condenses reveals effects="waterfall" fixed>
            <!-- Header -->
             <dom-if if="[[_shouldRenderHeader]]">
               <template>
@@ -145,14 +124,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </template>
           </dom-if>
           
-          <!-- Only for Admin -->
+          <!-- Admin views -->
           <dom-if if="[[user]]">
             <template>
-              
+                <dapp-dashboard name="dashboard"></dapp-dashboard>
+                <dapp-posts name="posts" route="[[subroute]]" id="dappPosts" on-edit="_editPost"></dapp-posts>
             </template>
           </dom-if>
 
         </iron-pages>
+        <!-- Additional Components -->
+        <dom-if if="[[user]]">
+          <template>
+              <!-- Main Fab -->
+              <paper-fab id="main-fab" 
+                         icon="dapp-icons:add" 
+                         on-tap="createPost" 
+                         aria-label="create post"></paper-fab>
+          </template>
+        </dom-if>
+
+        <!-- Post editor -->
+        <dapp-post-editor id="postEditor"></dapp-post-editor>
+
       </app-header-layout>
     </app-drawer-layout>
   </template>
@@ -176,13 +170,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           routeData: Object,
           subroute: String,
-
+          
           _shouldRenderHeader: {
-          computed: '_computeShouldRenderHeader(smallScreen, page)'
+            computed: '_computeShouldRenderHeader(smallScreen, page)'
         }
         };
       }
 
+      /**
+       * @var listeners
+       */
+      static get listeners() {return {
+        //'edit-post': '_editPost',
+      }}
+
+      /**
+       * @var observers
+       */
       static get observers() {
         return [
           '_routePageChanged(routeData.page)',
@@ -197,9 +201,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.rootPattern = (new URL(this.rootPath)).pathname;
       }
 
-        ready(){
+      ready(){
           super.ready();
-          this.signOut();
           // We are now listening for events
           this._listenForEvents();
       }
@@ -225,25 +228,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _userChanged(user){
         if(user){
           // send them to admin panel
-          this.set('route.path', '/dashboard');
-          //window.history.pushState({}, null, '/');
+          //this.set('route.path', '/dashboard');
+          this._lazyLoadAdminComponents();
         }
       }
 
-      _listenForEvents(){
-         this.$.auth.auth.onAuthStateChanged(function(auth) {
-                //Hmm
-            }.bind(this));
+      _lazyLoadAdminComponents(){
+        var resolvedPageUrl = this.resolveUrl('lazy-admin-resources.html');
+        Polymer.importHref(
+            resolvedPageUrl, () => {
+              //this._listenForAdminEvents();
+            }, null, true);
       }
 
+      _listenForEvents(){
+        
+         this.$.auth.auth.onAuthStateChanged((auth) => {
+
+            //if it's admin then just load the resources
+
+        });
+      }
+
+      _listenForAdminEvents(){
+        //this.$.dappPosts.addEventListener('edit-post', e => this._editPost(e));
+      }
+
+      /*
+       * @param event
+       */
+      _editPost(event){
+        if (event && event.detail) {
+            let post = event.detail.post;
+            this.$.postEditor.open(post);
+          }
+      }
+      
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
         var resolvedPageUrl = this.resolveUrl('pages/dapp-' + page + '.html');
-        Polymer.importHref(
-            resolvedPageUrl,
-            null,
-            this._showPage404.bind(this),
-            true);
+        Polymer.importHref(resolvedPageUrl, null, null, true);
       }
 
       _showPage404() {
@@ -265,14 +289,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   this.user = null;
             //}
           }
+
       // Sometimes we dont want to show the header
       _computeShouldRenderHeader(smallScreen, page){
-          if(smallScreen && page === 'home') {
+          if(smallScreen && page == 'home') {
             this.$.headerLayout.resetLayout();
             return false;
           }
           this.$.headerLayout.resetLayout();
           return true;
+      }
+
+      createPost(){
+        this.$.postEditor.open({});
       }
     }
 

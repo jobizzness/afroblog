@@ -68,6 +68,17 @@
                     </template>
                 </dom-if>
                 <div main-title></div>
+
+                <!-- SignOut -->
+                <dom-if if="[[user]]">
+                    <template>
+                        <paper-icon-button
+                                icon="[[_computeLockIcon(user)]]"
+                                disabled="[[!auth]]"
+                                on-tap="signOut">
+                        </paper-icon-button>
+                    </template>
+                </dom-if>
                 <!-- Navigation -->
                 <dom-if if="{{_shouldRenderTopNav}}">
                     <template>
@@ -77,7 +88,7 @@
                                     <a href="/" tabindex="-1" class="link">Whats Hot?</a>
                                 </paper-tab>
                                 <paper-tab>
-                                    <a href="#" tabindex="-1" class="link">Meet Afrodapp</a>
+                                    <a href="/login" tabindex="-1" class="link">Meet Afrodapp</a>
                                 </paper-tab>
                                 <paper-tab>
                                     <a href="#item1" tabindex="-1" class="link">Press</a>
@@ -90,7 +101,7 @@
                     </template>
                 </dom-if>
             </app-toolbar>
-            
+
 
     </template>
 
@@ -136,7 +147,10 @@
                     
             //     });
             // }
-
+            
+            signOut(){
+                console.log('okay meyn take it easy now...')
+            }
             _computeShouldShowLogo(smallScreen, page){
                 if(smallScreen){
                     return page != 'home';
@@ -144,6 +158,9 @@
                 return true;
             }
 
+            _computeLockIcon(user) {
+                return user ? 'dapp-icons:lock-open' : 'dapp-icons:lock';
+            }
         }
 
         window.customElements.define(DappHeader.is, DappHeader);
