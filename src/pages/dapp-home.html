@@ -91,18 +91,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
       <!-- Query -->
-      
-      <!--<iron-ajax
-        auto
-        url="https://bapi.afrodapp.com/wp-json/wp/v2/posts?_embed"
-        handle-as="json"
-        last-response="{{_posts}}"
-        debounce-duration="300"></iron-ajax>-->
-      <!--<firebase-query
-          order-by-child="status"
-          data="{{_posts}}"
-          path="/posts">
-      </firebase-query>-->
 
      <app-indexeddb-mirror
         key="/posts"
@@ -166,26 +154,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._fetchPosts();
         //this._listenForEvents();
       }
+
+      // We might need to extract this to it's own component
       _fetchPosts(){
         oboe('https://bapi.afrodapp.com/wp-json/wp/v2/posts?_embed')
           .node('!.[*]', post => {
-              // This callback will be called everytime a new object is
-              // found in the posts endpoint.
+              // Once we receive a post we will push
+              // it to our _posts object
               this.push('_posts', post);
-              console.log('seen it :)');
           })  
-          .done(things => {
-              console.log('there are');
+          .done(post => {
+              // maybe we need to do something when we're done
           });
       }
-      _getColor(index){
 
-        // switch(index){
-        //   case (1*index):
-
-        // }
-        console.log(index);
-      }
       _computeShouldOffsetList(smallScreen){
         return smallScreen ? 425: 0;
       }
@@ -196,9 +178,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.loading = false;
         }
       }
+      _getColor(index){
 
+        // switch(index){
+        //   case (1*index):
+
+        // }
+        console.log(index);
+      }
       _viewPost(e){
-        this.post = e.target.data;
+        if(e.target.data){
+          this.post = e.target.data;
+        }
+        
       }
     }
     

@@ -10,6 +10,8 @@
 <!-- App Components-->
 <link rel="import" href="../components/dapp-icons/dapp-icons.html">
 <link rel="import" href="../components/article-image/article-image.html">
+<link rel="import" href="../components/oboe.html">
+
 <dom-module id="dapp-post">
   <template>
     <style include="shared-styles iron-flex iron-flex-alignment">
@@ -121,7 +123,7 @@
                 </template>
               </dom-if>
             </header>
-            <main id="postRef"></main>
+            <main id="postRef" inner-h-t-m-l="{{_getContent(post)}}"></main>
           </div>
         </section>
       </section>
@@ -147,7 +149,6 @@
       static get properties(){ return{
         post:{
           type: Object,
-          observer: '_postChanged',
           notify: true
         },
         content: {
@@ -174,24 +175,14 @@
         //We check if we already have post
         //Sometime we only need to lazy load the content
         if(!this.post){
-          //this._getPost(this.routeData.slug);
+          this._getPost(this.routeData.slug);
         }
           
       }
-
-      // Will get and set the posts content
-      _getPostContent(){
-         firebase.database().ref('/postContent/').child(this.post.$key).on('value', (snapshot) => {
-            this.$.postRef.innerHTML = snapshot.val()? snapshot.val().content: null;
-        });
+      _getContent(post){
+        return post.content.rendered;
       }
 
-      // checks if we need to get post content or not
-      _postChanged(post){
-        if(post && !this.content){
-          this._getPostContent();
-        }
-      }
 
       _getMedia(post){
         return post._embedded["wp:featuredmedia"]["0"].media_details.sizes.full.source_url || null;
@@ -199,20 +190,15 @@
       _postContentChanged(content){}
 
       _getPost(slug){
-        firebase.database().ref('/posts').orderByChild('slug_status').equalTo(slug+'_published')
-              .once('value', (snapshot) => {
-                  if (snapshot.val()) {
-                      snapshot.forEach((childSnapshot) => {
-                        let post = childSnapshot.val();
-                        post.$key = Object.keys(snapshot.val())[0];
-                        this.post = post;
-
-                        // We might need to tell the outside world
-                        // that we finished loading.
-                        //this.loading = false;
-                      });
-                  }
-              });
+        console.log(slug);
+          oboe('https://bapi.afrodapp.com/wp-json/wp/v2/posts?_embed&slug=' + slug)
+            .node('!.*', post => {
+              this.post = post;
+            })  
+            .done(post => {
+                // maybe we need to do something when we're done
+                
+            });
       }
     }
 
