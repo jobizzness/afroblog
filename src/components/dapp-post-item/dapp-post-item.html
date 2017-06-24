@@ -39,12 +39,13 @@
             .post-item header{
                 padding:24px;
                 border-right: 5px solid;
-                border-color: transparent;
+                border-color: var(--accent-color)
             }
             .post-item header .author-name{
                 font-weight: 600;
                 font-size: 17px;
                 color: rgba(0, 0, 0, 0.78);
+                
 
             }
             .post-excert{
@@ -59,6 +60,7 @@
             }
             .post-item footer{
                 position: relative;
+                background-color: var(--accent-color);
                 padding: 24px 16px;
             }
             .post-item .post-title{
@@ -116,6 +118,9 @@
                 font-size: 18px;
 
             }
+            .more-link{
+                display: none;
+            }
             .post-time{
                 color: #909090;
             }
@@ -143,11 +148,11 @@
             <!-- Post header -->
             <dom-if if="[[!smallScreen]]">
                 <template>
-                    <header class="layout horizontal center" style$="border-color:[[data.color.accent]]">
+                    <header class="layout horizontal center">
                         <span class="post-time"><iron-icon icon="dapp-icons:clock"></iron-icon> 1 Week ago</span>
                         <span class="flex"></span>
-                        <span class="author-name">[[data.author_name]]</span>
-                        <dapp-avatar src$="[[data.avatar]]" height="50px" width="50px"></dapp-avatar>
+                        <span class="author-name">[[data._embedded.author.0.name]]</span>
+                        <dapp-avatar src$="{{_getAvatar(data)}}" height="50px" width="50px"></dapp-avatar>
                     </header>
                 </template>
             </dom-if>
@@ -158,7 +163,7 @@
                     <iron-image
                         sizing="cover" 
                         preload 
-                        src="[[data.image.medium]]"></iron-image>
+                        src="{{_getMedia(data)}}"></iron-image>
                 </figure>
             </a>
 
@@ -166,9 +171,9 @@
             <dom-if if="[[!smallScreen]]">
                 <template>
                     <a href$="/post/[[data.slug]]" class="post-title--link" alt$="read [[data.title]]">
-                        <h1 class="post-title">[[data.title]]</h1>
+                        <h1 class="post-title">[[data.title.rendered]]</h1>
                     </a>
-                    <p class="post-excert">Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet. Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet.liberavisse. Nam ea dicam hendrerit Donec sed odio dui. Cras mattis consectetur purus sit amet fermentum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vivamus sagittis lacus vel augue laoreet. liberavisse. Nam ea dicam hendrerit liberavisse. Nam ea dicam hendrerit</p>
+                    <div class="post-excert" inner-h-t-m-l="{{_getExcert(data)}}"></div>
                     <a href$="/post/[[data.slug]]" alt$="read [[data.title]]" class="read-link">Read <iron-icon icon="dapp-icons:chevron-right"></iron-icon></a>
                     <span style="display:block; margin-bottom:16px;"></span>
                 </template>
@@ -177,14 +182,14 @@
             <!-- Post footer -->
             <dom-if if="[[smallScreen]]">
                 <template>
-                    <footer class="post-footer--mobile" style$="background-color:[[data.color.accent]]">
+                    <footer class="post-footer--mobile" style$="background-color:[[color]]">
                         <a href$="/post/[[data.slug]]" alt$="read [[data.title]]">
                             <div class="owner-info--mobile">
-                                <dapp-avatar src$="[[data.avatar]]" height="50px" width="50px"></dapp-avatar>
-                                <span class="authors-name--mobile">[[data.author_name]]</span>
+                                <dapp-avatar src$="{{_getAvatar(data)}}" height="50px" width="50px"></dapp-avatar>
+                                <span class="authors-name--mobile">[[data._embedded.author.0.name]]</span>
                             </div>
                             <paper-fab mini="" icon="dapp-icons:heart-empty" class="favorite-fab"></paper-fab>
-                            <h1 class="post-title--mobile">[[data.title]]</h1>
+                            <h1 class="post-title--mobile">[[data.title.rendered]]</h1>
                         </a>
                     </footer>
                 </template>
@@ -214,6 +219,16 @@
                 Polymer.RenderStatus.afterNextRender(this, function() {
                     
                 });
+            }
+
+            _getAvatar(data){
+                return data._embedded.author['0'].avatar_urls['48'] || null;
+            }
+            _getMedia(data){
+                return data._embedded["wp:featuredmedia"]["0"].media_details.sizes.full.source_url || null;
+            }
+            _getExcert(data){
+                return data.excerpt.rendered || null;
             }
 
         }

@@ -28,6 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="components/dapp-icons/dapp-icons.html">
 <link rel="import" href="components/dapp-header/dapp-header.html">
 <link rel="import" href="shared-styles.html">
+
 <!-- Services -->
 <link rel="import" href="services/dapp-user/dapp-user.html">
 
@@ -98,7 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <iron-media-query query="max-width: 767px" query-matches="{{smallScreen}}"></iron-media-query>
 
       <app-header-layout header="[[dappHeader]]" id="headerLayout">
-        <app-header slot="header" condenses reveals effects="waterfall" fixed>
+        <app-header slot="header" condenses reveals effects="waterfall">
            <!-- Header -->
             <dom-if if="[[_shouldRenderHeader]]">
               <template>
@@ -256,6 +257,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (event && event.detail) {
             let post = event.detail.post;
             this.$.postEditor.open(post);
+            this.set('route.path', '/posts/edit');
           }
       }
 
@@ -278,12 +280,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       signOut() {
-              console.log('logging you out..')
-            //if (this.auth) {
-                  this.$.auth.signOut();
-                  this.user = null;
-            //}
-          }
+          console.log('logging you out..')
+        //if (this.auth) {
+              this.$.auth.signOut();
+              this.user = null;
+        //}
+      }
 
       // Sometimes we dont want to show the header
       _computeShouldRenderHeader(smallScreen, page){
@@ -296,6 +298,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       createPost(){
+        this.set('route.path', '/posts/create');
         this.$.postEditor.open({});
       }
     }

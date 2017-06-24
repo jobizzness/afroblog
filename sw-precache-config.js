@@ -18,7 +18,8 @@ module.exports = {
     '/bower_components/webcomponentsjs/webcomponents-lite.min.js',
     '/bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js',
     '/bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js',
-    '/bower_components/app-storage/app-indexeddb-mirror/common-worker.html'
+    '/bower_components/app-storage/app-indexeddb-mirror/common-worker.html',
+    '/bower_components/firebase/*.{js}'
   ],
   ignoreUrlParametersMatching: [
     /app-indexeddb-mirror/

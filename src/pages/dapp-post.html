@@ -46,45 +46,45 @@
           margin-right: 4px;
       }
       .post-title {
-            font-weight: 600;
-            font-size: 24px;
-            color: var(--app-text-color);
-            margin: 24px 0;
-        }
+          font-weight: 600;
+          font-size: 24px;
+          color: var(--app-text-color);
+          margin: 24px 0;
+      }
       .post-author{
         color: var(--app-text-color);
         font-size: 17px;
         font-weight: 500;
       }
       paper-fab#favorite-post{
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-        }
-        .post-content-inner{
-          margin: 16px auto;
-          max-width: 900px;
-        }
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+      }
+      .post-content-inner{
+        margin: 16px auto;
+        max-width: 900px;
+      }
        /* Smartphones (portrait) ----------- */
-            @media only screen and (max-width : 425px) {
-              .post-content{
-                margin:0;
-              }
-              .time, .post-author{
-                font-size: 14px;
-              }
-              .post-figure{
-                height: 45vh;
-                margin: 0;
-              }
-              article-image{
-                  margin: 8px -16px;
-              }
-              .image{
-                width: 100%;
-                --iron-image-width: 100%;
-              }
-            }
+      @media only screen and (max-width : 425px) {
+        .post-content{
+          margin:0;
+        }
+        .time, .post-author{
+          font-size: 14px;
+        }
+        .post-figure{
+          height: 45vh;
+          margin: 0;
+        }
+        article-image{
+            margin: 8px -16px;
+        }
+        .image{
+          width: 100%;
+          --iron-image-width: 100%;
+        }
+      }
     </style>
 
     <!-- app-route provides the name of the category. -->
@@ -102,7 +102,7 @@
           <!-- Could be anything-->
         <figure class="post-figure">
           <iron-image style="width:100%; height:100%; background-color: #eee;"
-                      src="[[post.image.medium]]"
+                      src="{{_getMedia(post)}}"
                       sizing="cover"
                       preload fade
           ></iron-image>
@@ -112,9 +112,9 @@
             <header>
               <dom-if if="[[post]]">
                 <template>
-                  <h1 class="post-title">[[post.title]]</h1>
+                  <h1 class="post-title">[[post.title.rendered]]</h1>
                     <div class="layout horizontal post-meta">
-                        <span class="post-author">Written by: <span>[[post.author_name]]</span></span>
+                        <span class="post-author">Written by: <span>[[post._embedded.author.0.name]]</span></span>
                         <span class="flex"></span>
                         <span class="time"><iron-icon icon="dapp-icons:time"></iron-icon><time>1 Week ago</time></span> 
                     </div>
@@ -174,14 +174,13 @@
         //We check if we already have post
         //Sometime we only need to lazy load the content
         if(!this.post){
-          this._getPost(this.routeData.slug);
+          //this._getPost(this.routeData.slug);
         }
           
       }
 
       // Will get and set the posts content
       _getPostContent(){
-        console.log(this.post);
          firebase.database().ref('/postContent/').child(this.post.$key).on('value', (snapshot) => {
             this.$.postRef.innerHTML = snapshot.val()? snapshot.val().content: null;
         });
@@ -194,8 +193,10 @@
         }
       }
 
-      _postContentChanged(content){
+      _getMedia(post){
+        return post._embedded["wp:featuredmedia"]["0"].media_details.sizes.full.source_url || null;
       }
+      _postContentChanged(content){}
 
       _getPost(slug){
         firebase.database().ref('/posts').orderByChild('slug_status').equalTo(slug+'_published')

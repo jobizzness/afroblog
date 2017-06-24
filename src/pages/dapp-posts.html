@@ -88,69 +88,64 @@
                 font-size: 12px;
             }
         </style>
-        <!-- Query -->
-        <firebase-query
-            order-by-child="status"
-            data="{{posts}}"
-            path="/posts">
-        </firebase-query>
+        
 
-            <vaadin-grid id="posts" items="[[posts]]" active-item="{{activeItem}}" multi-sort>
+        <vaadin-grid id="posts" items="[[posts]]" active-item="{{activeItem}}" multi-sort>
 
-                <vaadin-grid-column flex-grow="3" width="6em">
-                    <template class="header">Title</template>
-                    <template>
-                        <span class="title">[[item.title]]</span>
-                    </template>
-                </vaadin-grid-column>
+            <vaadin-grid-column flex-grow="3" width="6em">
+                <template class="header">Title</template>
+                <template>
+                    <span class="title">[[item.title]]</span>
+                </template>
+            </vaadin-grid-column>
 
-                <vaadin-grid-column width="6em">
-                    <template class="header">Author</template>
-                    <template>
-                        [[item.author_name]]
-                    </template>
-                </vaadin-grid-column>
+            <vaadin-grid-column width="6em">
+                <template class="header">Author</template>
+                <template>
+                    [[item.author_name]]
+                </template>
+            </vaadin-grid-column>
 
-                <vaadin-grid-column width="4em">
-                    <template class="header">Categories</template>
-                    <template>
-                        <span>headwrap</span>
-                    </template>
-                </vaadin-grid-column>
+            <vaadin-grid-column width="4em">
+                <template class="header">Categories</template>
+                <template>
+                    <span>headwrap</span>
+                </template>
+            </vaadin-grid-column>
 
-                <vaadin-grid-column width="4em">
-                    <template class="header">Tags</template>
-                    <template>
-                        <span class="tag">#cute</span>
-                    </template>
-                </vaadin-grid-column>
+            <vaadin-grid-column width="4em">
+                <template class="header">Tags</template>
+                <template>
+                    <span class="tag">#cute</span>
+                </template>
+            </vaadin-grid-column>
 
-                <vaadin-grid-column width="4em">
-                    <template class="header">Date</template>
-                    <template>
-                        2017/02/12
-                    </template>
-                </vaadin-grid-column>
+            <vaadin-grid-column width="4em">
+                <template class="header">Date</template>
+                <template>
+                    2017/02/12
+                </template>
+            </vaadin-grid-column>
 
-                <vaadin-grid-column width="4em">
-                    <template class="header">Status</template>
-                    <template>
-                        <span class$="[[item.status]]">[[item.status]]</span>
-                    </template>
-                </vaadin-grid-column>
+            <vaadin-grid-column width="4em">
+                <template class="header">Status</template>
+                <template>
+                    <span class$="[[item.status]]">[[item.status]]</span>
+                </template>
+            </vaadin-grid-column>
 
-                <!-- Actions -->
-                <vaadin-grid-column width="4em">
-                    <template class="header">Actions</template>
-                    <template>
-                    <div style="display: flex" class="actions">
-                        <paper-icon-button icon="dapp-icons:edit" disabled="[[!auth]]" on-tap="editPost"></paper-icon-button>
-                        <paper-icon-button icon="dapp-icons:delete" disabled="[[!auth]]" on-tap="deletePost"></paper-icon-button>
-                    </div>
-                    </template>
-                </vaadin-grid-column>
+            <!-- Actions -->
+            <vaadin-grid-column width="4em">
+                <template class="header">Actions</template>
+                <template>
+                <div style="display: flex" class="actions">
+                    <paper-icon-button icon="dapp-icons:edit" disabled="[[!auth]]" on-tap="editPost"></paper-icon-button>
+                    <paper-icon-button icon="dapp-icons:delete" disabled="[[!auth]]" on-tap="deletePost"></paper-icon-button>
+                </div>
+                </template>
+            </vaadin-grid-column>
 
-    </vaadin-grid>
+        </vaadin-grid>
 
 
     </template>
@@ -160,7 +155,7 @@
 
             static get is() { return 'dapp-posts'; }
 
-            static get properties() {return {
+            static get properties() { return {
                     activeItem: {
                         observer: '_activeItemChanged'
                     }
@@ -168,6 +163,7 @@
 
             constructor() {
                 super();
+                this.posts = [];
             }
 
             ready() {
@@ -176,16 +172,28 @@
                 Polymer.RenderStatus.afterNextRender(this, function() {
                     
                 });
+
+                this._getData()
+            }
+
+            _getData(){
+                firebase.database().ref('/posts').on('value', (snapshot) => {
+                    if (snapshot.val()) {
+                        this.posts = Object.keys(snapshot.val()).map(function (key) {
+                            return snapshot.val()[key]
+                        });
+                    }
+                });
             }
 
             _activeItemChanged(item) {
-            //this.$.posts.selectedItems = item ? [item] : [];
-            item ? this.dispatchEvent(new CustomEvent('edit', {detail: {post: item}})): null;
-            //this.fire('edit-post', item);
+                //this.$.posts.selectedItems = item ? [item] : [];
+                item ? this.dispatchEvent(new CustomEvent('edit', {detail: {post: item}})): null;
+                //this.fire('edit-post', item);
             }
 
         }
 
         window.customElements.define(DappPosts.is, DappPosts);
     </script>
-</dom-module>]
+</dom-module>
