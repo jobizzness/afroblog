@@ -11,32 +11,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/app-metadata/app-metadata.html">
+
 <!-- Components -->
 <link rel="import" href="components/dapp-icons/dapp-icons.html">
 <link rel="import" href="components/dapp-header/dapp-header.html">
 <link rel="import" href="shared-styles.html">
 
 <!-- Services -->
-<link rel="import" href="services/dapp-user/dapp-user.html">
-
+<link rel="import" href="services/dapp-analytics/dapp-analytics.html">
 <!-- Pages -->
 <link rel="lazy-import" href="pages/dapp-home.html">
 <link rel="lazy-import" href="pages/dapp-post.html">
 <link rel="lazy-import" href="pages/dapp-feature.html">
-<link rel="lazy-import" href="pages/dapp-login.html">
 <link rel="lazy-import" href="pages/dapp-view404.html">
 
 <dom-module id="dapp-app">
@@ -74,11 +73,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   auth-domain="afrodapp-blog.firebaseapp.com" 
                   database-url="https://afrodapp-blog.firebaseio.com">
     </firebase-app>
-
+    
   	<firebase-auth id="auth" provider="google" user="{{auth}}" on-error="showError"></firebase-auth>
 
+    <app-metadata id="appMeta"></app-metadata>
     <!-- i need app user -->
-    <dapp-user uid="[[auth.uid]]" user="{{user}}"></dapp-user>
+    <!--<dapp-user uid="[[auth.uid]]" user="{{user}}"></dapp-user>-->
+
+    <dapp-analytics key="UA-56825866-2"></dapp-analytics>
 
     <app-location route="{{route}}"></app-location>
     <app-route
@@ -115,33 +117,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
 
           <dapp-home name="home" post="{{post}}"></dapp-home>
-          <dapp-post name="post" post="[[post]]" route="[[subroute]]"></dapp-post>
+          <dapp-post name="post" post="[[post]]" route="[[subroute]]" on-make-seo="_makeMeta"></dapp-post>
           <dapp-feature name="feature"></dapp-feature>
           <my-view404 name="view404"></my-view404>
 
-          <!-- Only for guest -->
-          <dapp-login name="login" on-login="login"></dapp-login>
-          
-          <!-- Admin views -->
-          <dapp-dashboard name="dashboard"></dapp-dashboard>
-          <dapp-posts name="posts" route="[[subroute]]" id="dappPosts" on-edit="_editPost"></dapp-posts>
-
-
         </iron-pages>
-
-        <!-- Additional Components -->
-        <dom-if if="[[user]]">
-          <template>
-              <!-- Main Fab -->
-              <paper-fab id="main-fab" 
-                         icon="dapp-icons:add" 
-                         on-tap="createPost" 
-                         aria-label="create post"></paper-fab>
-          </template>
-        </dom-if>
-
-        <!-- Post editor -->
-        <dapp-post-editor id="postEditor" route="[[subroute]]"></dapp-post-editor>
 
       </app-header-layout>
     </app-drawer-layout>
@@ -169,6 +149,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           
           _shouldRenderHeader: {
             computed: '_computeShouldRenderHeader(smallScreen, page)'
+        },
+        /**
+         * Object to keep track of added meta elements so they can be reused
+         * or removed as necessary
+         */
+        _meta: {
+          type: Object,
+          value: {}
         }
         };
       }
@@ -203,6 +191,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._listenForEvents();
       }
 
+      connected() {
+        // this will create the singleton element if it has not been created yet
+        //this.AppMeta = Polymer.AppMetadata.requestAvailability();
+
+        //this._lazyLoadResources();
+      }
+
       _routePageChanged(page) {
         // Polymer 2.0 will call with `undefined` on initialization.
         // Ignore until we are properly called with a string.
@@ -221,45 +216,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
       }
       
-      _userChanged(user){
-        if(user){
-          // send them to admin panel
-          //this.set('route.path', '/dashboard');
-          this._lazyLoadAdminComponents();
-        }
-      }
-
-      _lazyLoadAdminComponents(){
-        var resolvedPageUrl = this.resolveUrl('lazy-admin-resources.html');
-        Polymer.importHref(
-            resolvedPageUrl, () => {
-              //this._listenForAdminEvents();
-            }, null, true);
-      }
 
       _listenForEvents(){
-        
-         this.$.auth.auth.onAuthStateChanged((auth) => {
-
-            //if it's admin then just load the resources
-
-        });
+        // May need to listen for events
       }
 
-      _listenForAdminEvents(){
-        //this.$.dappPosts.addEventListener('edit-post', e => this._editPost(e));
-      }
-
-      /*
-       * @param event
-       */
-      _editPost(event){
-        if (event && event.detail) {
-            let post = event.detail.post;
-            this.$.postEditor.open(post);
-            this.set('route.path', '/posts/edit');
-          }
-      }
 
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
@@ -271,21 +232,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.page = 'view404';
       }
 
-      login(){
-        this._loginWithPopup();
-      }
 
-      _loginWithPopup() {
-          this.$.auth.signInWithPopup();
-      }
-
-      signOut() {
-          console.log('logging you out..')
-        //if (this.auth) {
-              this.$.auth.signOut();
-              this.user = null;
-        //}
-      }
 
       // Sometimes we dont want to show the header
       _computeShouldRenderHeader(smallScreen, page){
@@ -300,6 +247,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       createPost(){
         this.set('route.path', '/posts/create');
         this.$.postEditor.open({});
+      }
+
+      /**
+       * Update the DOM when the data changes
+       */
+      _makeMeta(e) {
+
+        let data = e.detail;
+        this.$.appMeta.set('data', data);
       }
     }
 

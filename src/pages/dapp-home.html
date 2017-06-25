@@ -1,12 +1,3 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
@@ -15,11 +6,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
-<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <!-- App Components-->
 <link rel="import" href="../components/oboe.html">
@@ -34,11 +23,117 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       dapp-post-item:nth-child(1n){
           --accent-color: #9E9E9E;
       }
-      dapp-post-item:nth-child(3n){
-          --accent-color: #ff4081;
-      }
       dapp-post-item:nth-child(2n){
-          --accent-color: #2196F3;
+          --accent-color: #29B6F6;
+      }
+      dapp-post-item:nth-child(4n){
+        --accent-color: #FFC107;
+      }
+      dapp-post-item:nth-child(5n){
+        --accent-color: #673AB7;
+      }
+      dapp-post-item:nth-child(6n){
+        --accent-color: #EC407A;
+      }
+      dapp-post-item:nth-child(7n){
+        --accent-color: #AB47BC;
+      }
+      .timeline-wrapper{
+        padding: 8px;
+        margin-bottom:16px;
+      }
+      .timeline-item {
+          background-color:#fff;
+          box-shadow: 0 1px 3px 0 rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12);
+          margin: 0;
+          border-radius: 3px;
+          height:300px;
+          overflow:hidden;
+      }
+      @keyframes placeHolderShimmer{
+          0%{
+              background-position: -468px 0
+          }
+          100%{
+              background-position: 468px 0
+          }
+      }
+
+      .animated-background {
+          animation-duration: 1s;
+          animation-fill-mode: forwards;
+          animation-iteration-count: infinite;
+          animation-name: placeHolderShimmer;
+          animation-timing-function: linear;
+          background: #f6f7f8;
+          background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+          background-size: 800px 104px;
+          height: 100%;
+          position: relative;
+      }
+      .background-masker {
+            background: #fff;
+            position: absolute;
+        }
+      .background-masker.image-holder {
+          top: 0;
+          left: 0;
+          right:0;
+          height: 160px;
+      }
+      .bottom {
+            bottom: 0;
+            width: 100%;
+            left: 0;
+            height: 53px;
+      }
+      .bottom-top{
+          bottom: 60px;
+          width: 100%;
+          left: 0;
+          height: 10px;
+      }
+      .bottom-toper{
+          bottom: 78px;
+          width: 100%;
+          left: 0;
+          height: 10px;
+      }
+      .avatar-right{
+          bottom: 87px;
+          width: 10px;
+          left: 86px;
+          height: 86px;
+      }
+      .avatar-left{
+          bottom: 0;
+          width: 10px;
+          left: 0;
+          height: 150px;
+      }
+      .content-second-line{
+            width: 31%;
+            right: 0;
+            bottom: 70px;
+            height: 10px;
+      }
+      .content-third-line{
+          width: 22%;
+          right: 0;
+          bottom: 53px;
+          height: 10px;
+      }
+      .subheader-right{
+            bottom: 118px;
+            width: 93%;
+            left: 96px;
+            height: 14px;
+      }
+      .subheader-bottom{
+        bottom: 88px;
+        width: 93%;
+        left: 96px;
+        height: 21px;
       }
       /* Smartphones (portrait) ----------- */
         @media only screen and (max-width : 425px) {
@@ -110,19 +205,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <h1 class="hero-title">Afrodapp</h1>
               <h2 class="hero-sub_title">Discover Art &amp; Creativity of Africa's Rising Fashion Industry</h2>
               <div class="layout horizontal center-center">
-                <paper-button raised class="discover-button">
+                <a href="/feature"><paper-button raised class="discover-button">
                   Learn More<iron-icon icon="dapp-icons:chevron-right"></iron-icon>
-                </paper-button>
+                </paper-button></a>
               </div>
             </div>
           </div>
         </template>
       </dom-if>
+
       <iron-list items="[[posts]]" as="post" scroll-target="document" scroll-offset="{{_shouldOffsetList}}">
         <template>
           <dapp-post-item data="[[post]]" on-tap="_viewPost"></dapp-post-item>
         </template>
       </iron-list>
+
+                <div class="timeline-wrapper iron-selected" hidden$="[[!loading]]" id="loader">
+              <div class="timeline-item">
+                  <div class="animated-background">
+                      <div class="background-masker image-holder"></div>
+                      <div class="background-masker bottom"></div>
+                      <div class="background-masker bottom-top"></div>
+                      <div class="background-masker bottom-toper"></div>
+                      <div class="background-masker avatar-right"></div>
+                      <div class="background-masker avatar-left"></div>
+                      <div class="background-masker subheader-right"></div>
+                      <div class="background-masker subheader-bottom"></div>
+                      <div class="background-masker content-top"></div>
+                      <div class="background-masker content-first-end"></div>
+                      <div class="background-masker content-second-line"></div>
+                      <div class="background-masker content-second-end"></div>
+                      <div class="background-masker content-third-line"></div>
+                      <div class="background-masker content-third-end"></div>
+                  </div>
+              </div>
+          </div>
     </div>
   </template>
 
@@ -138,6 +255,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             post: {
               type:Object,
               notify: true
+            },
+            loading: {
+              type:Boolean,
+              value: true
             },
             _shouldOffsetList:{
               computed:'_computeShouldOffsetList(smallScreen)'
@@ -171,26 +292,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _computeShouldOffsetList(smallScreen){
         return smallScreen ? 425: 0;
       }
+
       _postsChanged(posts){
-        
         if(posts){
-          console.log(posts)
-          this.loading = false;
+          this.$.loader.style.opacity = 0;
+          Polymer.RenderStatus.afterNextRender(this, function() {
+                 this.loading = false;   
+                });
+          
         }
       }
-      _getColor(index){
 
-        // switch(index){
-        //   case (1*index):
-
-        // }
-        console.log(index);
-      }
       _viewPost(e){
         if(e.target.data){
           this.post = e.target.data;
         }
-        
       }
     }
     

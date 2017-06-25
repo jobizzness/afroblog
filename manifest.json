@@ -1,6 +1,6 @@
 {
     "name": "Afrodapp Blog",
-    "start_url": "/",
+    "start_url": "/?bh=true",
     "short_name": "AfroBlog",
     "icons": [
         {
@@ -41,6 +41,11 @@
         {
             "src": "/images/manifest/android-chrome-384x384.png",
             "sizes": "384x384",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/manifest/android-chrome-512x512.png",
+            "sizes": "512x512",
             "type": "image/png"
         }
     ],

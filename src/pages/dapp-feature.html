@@ -1,31 +1,121 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../shared-styles.html">
 
 <dom-module id="dapp-feature">
   <template>
-    <style include="shared-styles">
+    <style include="shared-styles iron-flex iron-flex-alignment">
       :host {
         display: block;
-        padding: 10px;
+        
+      }
+      .hero{
+        height:60vh;
+        overflow:hidden;
+      }
+      .feature-hero-info{
+        width:100%;
+        height:100%;
+        
+      }
+         
+      .feature-hero-info .hero-title{
+          color: #585858;
+          font-size: 48px;
+          font-weight: 800;
+          line-height: 100px;
+          text-transform: none;
+          margin: 0;
+      }
+      .feature-hero-info .sub-title{
+          font-size: 19px;
+          font-weight: 300;
+          line-height: 35px;
+          margin:0;
+          text-transform: none;
+      }
+      .feature-btn{
+        background: #fafafa;
+        margin-top: 24px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.08), 0 15px 35px rgba(0, 0, 0, 0.13);
+        padding: 16px 28px;
+        color: var(--accent-color);
+        font-weight:500;
+      }
+      /* Smartphones (portrait) ----------- */
+        @media only screen and (max-width : 425px) {
+          .feature-hero-info{
+            padding:16px;
+          }
+          .feature-hero-info .hero-title{
+             font-size: 24px !important;
+              line-height: 1 !important;
+          }
+          .feature-hero-info .sub-title{
+            font-size: 16px
+          }
+        }
+      .svg-network, .svg-star{
+        position: absolute;
+        z-index: 0;
+        height: 40px;
+      }
+      .lr{
+        top: 14%;
+        right: 8%;
+      }
+      .la{
+        top: 30%;
+        left: 5%;
+      }
+      .sa{
+        top: 30%;
+        left: 70%;
+      }
+      .ta{
+        transform: rotate(45deg);
+        height:30px;
+        top:10%;
+        left:50%;
+      }
+      .ca{
+          bottom: -28px;
+          height: 50px;
+          left: 10%;
+      }
+      .background{
+        position: absolute;
+        width: 100%;
+        height: 60vh;
+        top: 62px;
+        z-index: -1;
+
       }
     </style>
-
-    <div class="card">
-      <div class="circle">3</div>
-      <h1>View Three</h1>
-      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam, est id tempor laoreet.Pro saepe pertinax ei, ad pri animal labores suscipiantur.</p>
-    </div>
+    <header class="hero">
+      <section class="feature-hero-info layout vertical center-center">
+              <h1 class="hero-title">Got something to share?</h1>
+              <p class="sub-title">Tell your story to the world.</p>
+              <paper-button raised class="feature-btn">Feature me</paper-button>
+      </section>
+      <img src="/images/share.svg" alt="" class="lr svg-network">
+      <img src="/images/share.svg" alt="" class="la svg-network">
+      <img src="/images/triangle.svg" alt="" class="ta svg-network">
+      <img src="/images/star.svg" alt="" class="sa svg-star">
+      <img src="/images/rec.svg" alt="" class="ca svg-network">
+      <div class="background">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 960 560" preserveAspectRatio="xMidYMid slice">
+              <path fill="#23F0FF" d="M-6.1,535.9c48-30.2,86.9-85.8,103.6-114.5c18.2-31.4,103.3-166.7,252.9-91.8
+        c131.7,65.9,284.2,149.4,476.4,35.5c21-12.4,75.9-57.8,139.2-55V-6.4L830.7-6.3C808.8,26.4,807.7,249,545,165.4S165,199,106.6,263.4
+        S-5.9,321.4-5.9,321.4L-6.1,535.9z"></path>
+              <path fill="#3D4773" d="M-5.8,569.6l-0.2-33.6c48-30.2,86.9-85.8,103.6-114.5c18.2-31.4,103.3-166.7,252.9-91.8
+        c131.7,65.9,284.2,149.4,476.4,35.5c21-12.4,76-57.8,139.2-55v259.5"></path>
+          </svg>
+      </div>
+    </header>
+    
   </template>
 
   <script>

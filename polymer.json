@@ -4,7 +4,10 @@
   "fragments": [
     "src/pages/dapp-home.html",
     "src/pages/dapp-post.html",
-    "src/pages/dapp-login.html"
+    "src/pages/dapp-afrodapp.html",
+    "src/pages/dapp-feature.html",
+    "src/pages/dapp-press.html",
+    "src/pages/dapp-view404.html"
   ],
   "sources": [
     "src/**/**/*",
@@ -20,6 +23,7 @@
     "rules": ["polymer-2"]
   },
    "builds": [{
+     "bundle": true,
     "name": "es5-unbundled",
     "js": {"minify": true, "compile": true},
     "css": {"minify": true},

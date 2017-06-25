@@ -4,9 +4,8 @@
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../shared-styles.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
-<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
-
+<link rel="import" href="../components/moment/moment.html">
 <!-- App Components-->
 <link rel="import" href="../components/dapp-icons/dapp-icons.html">
 <link rel="import" href="../components/article-image/article-image.html">
@@ -90,16 +89,15 @@
     </style>
 
     <!-- app-route provides the name of the category. -->
-        <app-route
-                route="[[route]]"
-                pattern="/:slug"
-                data="{{routeData}}"></app-route>
+    <app-route
+            route="[[route]]"
+            pattern="/:slug"
+            data="{{routeData}}"></app-route>
 
     <article class="content">
 
       <section class="cover"></section>
       <section class="article">
-        <!-- Header for small devices -->
         
           <!-- Could be anything-->
         <figure class="post-figure">
@@ -118,7 +116,7 @@
                     <div class="layout horizontal post-meta">
                         <span class="post-author">Written by: <span>[[post._embedded.author.0.name]]</span></span>
                         <span class="flex"></span>
-                        <span class="time"><iron-icon icon="dapp-icons:time"></iron-icon><time>1 Week ago</time></span> 
+                        <span class="time"><iron-icon icon="dapp-icons:time"></iron-icon><time>{{_time(post.date)}}</time></span> 
                     </div>
                 </template>
               </dom-if>
@@ -149,7 +147,8 @@
       static get properties(){ return{
         post:{
           type: Object,
-          notify: true
+          notify: true,
+          observer: '_postChanged'
         },
         content: {
           type: String,
@@ -171,26 +170,33 @@
 
       ready(){
         super.ready();
-        
         //We check if we already have post
         //Sometime we only need to lazy load the content
         if(!this.post){
           this._getPost(this.routeData.slug);
         }
-          
       }
+
       _getContent(post){
         return post.content.rendered;
       }
 
+      _postChanged(post, old){
+        if(post && post !== old){
+          this._makeSEO(post);
+        }
+      }
 
       _getMedia(post){
         return post._embedded["wp:featuredmedia"]["0"].media_details.sizes.full.source_url || null;
       }
+
+      _time(date){
+        return moment(date).fromNow();
+      }
       _postContentChanged(content){}
 
       _getPost(slug){
-        console.log(slug);
           oboe('https://bapi.afrodapp.com/wp-json/wp/v2/posts?_embed&slug=' + slug)
             .node('!.*', post => {
               this.post = post;
@@ -200,6 +206,27 @@
                 
             });
       }
+      /**
+         * makes seo
+         * @param post
+         */
+        _makeSEO(post){
+            this.dispatchEvent(new CustomEvent('make-seo', {detail:{
+                title: post.title.rendered,
+                description: post.excerpt.rendered,
+                'og:title': post.title.rendered,
+                'og:url': 'https://blog.afrodapp.com/post/'+ post.slug,
+                'og:image': this._getMedia(post),
+                'og:description': post.excerpt.rendered,
+                'twitter:card': 'summary_large_image',
+                'twitter:site': '@afrodapp',
+                'twitter:creator': '@afrodapp',
+                'twitter:title': post.title.rendered,
+                'twitter:description': post.excerpt.rendered,
+                'twitter:image': this._getMedia(post)
+            }}));
+        }
+       
     }
 
     window.customElements.define(DappPost.is, DappPost);

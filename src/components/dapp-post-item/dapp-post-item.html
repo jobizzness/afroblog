@@ -4,7 +4,7 @@
 <link rel="import" href="../../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-
+<link rel="import" href="../../components/moment/moment.html">
 <!-- Components -->
 <link rel="import" href="../dapp-avatar/dapp-avatar.html">
 <link rel="import" href="../dapp-icons/dapp-icons.html">
@@ -22,7 +22,7 @@
             }
             .post-item{
                 background-color:#fff;
-                box-shadow: 0 1px 1px rgba(0,0,0,.1) !important;
+                box-shadow: 0 1px 3px 0 rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 2px 1px -1px rgba(0,0,0,.12);
                 margin: 16px 0;
                 border-radius: 3px;
                 overflow: hidden;
@@ -149,7 +149,7 @@
             <dom-if if="[[!smallScreen]]">
                 <template>
                     <header class="layout horizontal center">
-                        <span class="post-time"><iron-icon icon="dapp-icons:clock"></iron-icon> 1 Week ago</span>
+                        <span class="post-time"><iron-icon icon="dapp-icons:clock"></iron-icon>{{_time(data.date)}}</span>
                         <span class="flex"></span>
                         <span class="author-name">[[data._embedded.author.0.name]]</span>
                         <dapp-avatar src$="{{_getAvatar(data)}}" height="50px" width="50px"></dapp-avatar>
@@ -223,6 +223,9 @@
 
             _getAvatar(data){
                 return data._embedded.author['0'].avatar_urls['48'] || null;
+            }
+            _time(date){
+                return moment(date).fromNow();
             }
             _getMedia(data){
                 return data._embedded["wp:featuredmedia"]["0"].media_details.sizes.full.source_url || null;
