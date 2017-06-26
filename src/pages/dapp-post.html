@@ -188,7 +188,7 @@
       }
 
       _getMedia(post){
-        return post._embedded["wp:featuredmedia"]["0"].media_details.sizes.full.source_url || null;
+        return post._embedded["wp:featuredmedia"]["0"].slug || null;
       }
 
       _time(date){

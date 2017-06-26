@@ -21,11 +21,11 @@
     "headers": [
       {
         "source": "/",
-        "headers": [{"key": "Link", "value": "</src/dapp-app.html>;rel=preload;as=document,</src/dapp-home.html>;rel=preload;as=document</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,"}]
+        "headers": [{"key": "Link", "value": "</src/dapp-app.html>;rel=preload;as=document,</src/pages/dapp-home.html>;rel=preload;as=document</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,"}]
       },
       {
         "source": "/post/*",
-        "headers": [{"key": "Link", "value": "</src/dapp-app.html>;rel=preload;as=document,</src/dapp-post.html>;rel=preload;as=document</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,"}]
+        "headers": [{"key": "Link", "value": "</src/dapp-app.html>;rel=preload;as=document,</src/pages/dapp-post.html>;rel=preload;as=document</bower_components/webcomponentsjs/custom-elements-es5-adapter.js>;rel=preload;as=script,</bower_components/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,"}]
       }
     ]
   }

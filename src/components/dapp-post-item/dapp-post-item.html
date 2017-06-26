@@ -228,7 +228,7 @@
                 return moment(date).fromNow();
             }
             _getMedia(data){
-                return data._embedded["wp:featuredmedia"]["0"].media_details.sizes.full.source_url || null;
+                return data._embedded["wp:featuredmedia"]["0"].slug || null;
             }
             _getExcert(data){
                 return data.excerpt.rendered || null;
